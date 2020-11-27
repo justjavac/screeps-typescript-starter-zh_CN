@@ -1,5 +1,8 @@
-// deno-lint-ignore no-explicit-any
-declare const module: any;
+declare const module: {
+  exports: {
+    loop: () => void;
+  };
+};
 
 module.exports.loop = function (): void {
   console.log("running...");
