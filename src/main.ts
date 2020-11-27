@@ -5,7 +5,7 @@ import { roleHarvester } from "role/harvester";
 import { roleUpgrader } from "role/upgrader";
 
 export const loop = ErrorMapper.wrapLoop(() => {
-  const tower = Game.getObjectById<StructureTower>("TOWER_ID");
+  const tower = Game.getObjectById("TOWER_ID" as Id<StructureTower>);
   if (tower) {
     const closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
       filter: structure => structure.hits < structure.hitsMax
