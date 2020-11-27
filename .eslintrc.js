@@ -84,5 +84,14 @@ module.exports = {
     radix: "error",
     "sort-imports": "warn",
     "spaced-comment": "error",
-  }
+  },
+  "overrides": [
+    {
+        "files": ["src/types/**"],
+        "rules": {
+          "@typescript-eslint/no-empty-interface": "off",
+          "camelcase": "off"
+      }
+    }
+]
 };
