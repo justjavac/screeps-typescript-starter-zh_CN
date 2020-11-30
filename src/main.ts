@@ -20,25 +20,25 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
   }
 
-  const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
+  const harvesters = _.filter(Game.creeps, creep => creep.memory.role === "harvester");
   if (harvesters.length < 2) {
-    const name = "H" + (Date.now()%10000);
-    const opts = {memory:{role: "harvester"} }
-    Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE], name, opts as any);
+    const name = `H${Date.now() % 1000}`;
+    const opts = { memory: { role: "harvester" } };
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], name, opts as any);
   }
 
-  const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-  if (upgraders.length < 1) {
-    const name = "U" + (Date.now()%10000);
-    const opts = {memory:{role: "upgrader"} }
-    Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE], name, opts as any);
+  const upgraders = _.filter(Game.creeps, creep => creep.memory.role === "upgrader");
+  if (upgraders.length < 2) {
+    const name = `U${Date.now() % 1000}`;
+    const opts = { memory: { role: "upgrader" } };
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], name, opts as any);
   }
 
-  const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-  if (builders.length < 3) {
-    const name = "B" + (Date.now()%10000);
-    const opts = {memory:{role: "builder"} }
-    Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE], name, opts as any);
+  const builders = _.filter(Game.creeps, creep => creep.memory.role === "builder");
+  if (builders.length < 2) {
+    const name = `B${Date.now() % 1000}`;
+    const opts = { memory: { role: "builder" } };
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], name, opts as any);
   }
 
   for (const name in Game.creeps) {
