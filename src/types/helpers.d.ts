@@ -8,30 +8,30 @@ interface _HasRoomPosition {
 
 interface GlobalControlLevel {
   /**
-   * The current level.
+   * 当前的等级。
    */
   level: number;
   /**
-   * The current progress to the next level.
+   * 到下一个等级当前的进展。
    */
   progress: number;
   /**
-   * The progress required to reach the next level.
+   * 到下一个等级所需的进展。
    */
   progressTotal: number;
 }
 
 interface GlobalPowerLevel {
   /**
-   * The current level.
+   * 当前的等级。
    */
   level: number;
   /**
-   * The current progress to the next level.
+   * 到下一个等级当前的进展。
    */
   progress: number;
   /**
-   * The progress required to reach the next level.
+   * 到下一个等级所需的进展。
    */
   progressTotal: number;
 }
@@ -138,22 +138,22 @@ interface HeapStatistics {
 }
 
 /**
- * Describes one part of a creep’s body.
+ * creep 身体部件的描述
  */
 type BodyPartDefinition<T extends BodyPartConstant = BodyPartConstant> = T extends any
   ? {
       /**
-       * One of the `RESOURCE_*` constants.
+       * `RESOURCE_*` 常量之一
        *
-       * If the body part is boosted, this property specifies the mineral type which is used for boosting.
+       * 如果该身体部件被强化(boost)了，则该属性指定了强化所用的化合物类型。[了解更多](https://screeps-cn.github.io/resources.html)。
        */
       boost?: keyof typeof BOOSTS[T];
       /**
-       * One of the body part types constants.
+       * 身体部件常量之一。
        */
       type: T;
       /**
-       * The remaining amount of hit points of this body part.
+       * 该身体部件剩余的生命值。
        */
       hits: number;
     }
@@ -161,7 +161,7 @@ type BodyPartDefinition<T extends BodyPartConstant = BodyPartConstant> = T exten
 
 interface Owner {
   /**
-   * The name of the owner user.
+   * 拥有者姓名。
    */
   username: string;
 }

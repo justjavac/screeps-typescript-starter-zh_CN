@@ -1,135 +1,215 @@
 /**
- * Creeps are your units.
- * Creeps can move, harvest energy, construct structures, attack another creeps, and perform other actions.
- * Each creep consists of up to 50 body parts with the following possible types:
+ * creep 是你的单位。
+ *
+ * creep 可以移动、采集能量、建造建筑、攻击其他 creep 以及执行其他动作。
+ *
+ * 每个 creep 都由最多 50 个身体部件构成，身体部件的类型如下：
+ *
+ * ![](https://screeps-cn.github.io/api/img/bodyparts.png)
+ *
+ * 身体部件 | 孵化成本 | 每个部件效果
+ * :---- | :--- | :-----
+ * `MOVE` | `50` | 每 tick 减少 2 点疲惫值
+ * `WORK` | `100` | 每 tick 从能量源采集 2 单位能量。
+ * || 每 tick 从矿区采集 1 单位矿物。
+ * || 每 tick 增加工地建设进度 5 点，花费 5 单位能量。
+ * || 每 tick 增加建筑 100 耐久度，花费 1 单位能量。
+ * || 每 tick 拆减建筑 50 点耐久，并返还 0.25 单位能量。
+ * || 每 tick 提高控制器升级进度 1 点，花费 1 单位能量。
+ * `CARRY` | `50` | 携带最多 50 单位资源。
+ * `ATTACK` | `80` | 对相邻的 creep 或建筑造成 30 点伤害。
+ * `RANGED_ATTACK` | `150` | 单个目标时，每 tick 对 creep 或建筑造成 10 点伤害，范围为 3 格。
+ * || 多个目标时，每 tick 对范围内所有 creep 与建筑造成 1-4-10 点伤害，具体伤害取决于距离，范围为 3 格。
+ * `HEAL` | `250` | 治疗对象可为自己或其它 creep。自愈或治疗相邻 creep 时每 tick 恢复 12 点耐久，一定距离内远程治疗每 tick 恢复 4 点耐久。
+ * `CLAIM` | `600` | 占领一个中立房间的控制器。
+ * || 每部件每 tick 使己方对中立房间控制器的预定时间增加 1 tick，或使其他玩家的预定时间减少 1 tick。
+ * || 每部件每 tick 使其他玩家控制器降级计数器加速 300 tick。
+ * || 注：拥有该部件的 creep 寿命只有 600 tick，且无法被 renew。
+ * `TOUGH` | `10` | 无附加效果，唯一作用是增加 creep 的最大耐久值。可被强化以承受更多伤害。
  */
 interface Creep extends RoomObject {
   readonly prototype: Creep;
 
   /**
-   * An array describing the creep's body.
+   * 一个描述了该 creep 身体部件的数组，每一个数组元素都拥有如下的属性:
+   *
+   * 参数 | 类型 | 描述
+   * :---- | :--- | :-----
+   * boost | `string` \| `undefined` | 如果该身体部件被强化(boost)了，则该属性指定了强化所用的化合物类型。化合物为 `RESOURCE_*` 常量之一。
+   * type | `string` | 身体部件常量之一。
+   * hits | `number` | 该身体部件剩余的生命值。
    */
   body: BodyPartDefinition[];
   /**
-   * An object with the creep's cargo contents.
-   * @deprecated Is an alias for Creep.store
+   * **已废弃**
+   *
+   * 一个包含了该建筑中所存储的货物的 [`Store`](https://screeps-cn.github.io/api/#Store) 对象。
+   * @deprecated [`Creep.store`](https://screeps-cn.github.io/api/#Creep.store) 的别名。
    */
   carry: StoreDefinition;
   /**
-   * The total amount of resources the creep can carry.
-   * @deprecated alias for Creep.store.getCapacity
+   * **已废弃**
+   *
+   * 返回指定资源的存储容量, 对于通用型 store，当 reource 参数为 `undefined` 则返回总容量。
+   * @deprecated [`Creep.store.getCapacity()`](https://screeps-cn.github.io/api/#Store.getCapacity) 的别名。
    */
   carryCapacity: number;
   /**
-   * The movement fatigue indicator. If it is greater than zero, the creep cannot move.
+   * 每次移动的疲劳值指示器，当该值大于零时 creep 无法移动。
    */
   fatigue: number;
   /**
-   * The current amount of hit points of the creep.
+   * 当前的 creep 生命值。
    */
   hits: number;
   /**
-   * The maximum amount of hit points of the creep.
+   * 该 creep 的最大生命值。
    */
   hitsMax: number;
   /**
-   * A unique object identifier. You can use `Game.getObjectById` method to retrieve an object instance by its `id`.
+   * 一个唯一的对象标识。你可以使用 [`Game.getObjectById`](https://screeps-cn.github.io/api/#Game.getObjectById) 方法获取对象实例。
    */
   id: Id<this>;
   /**
-   * A shorthand to `Memory.creeps[creep.name]`. You can use it for quick access the creep’s specific memory data object.
+   * 指向 `Memory.creeps[creep.name]` 的链接。你可以用它来快速访问该 creep 的特定内存对象。[点此了解更多关于 memory 的信息](https://screeps-cn.github.io/global-objects.html#Memory-object)
    */
   memory: CreepMemory;
   /**
-   * Whether it is your creep or foe.
+   * 该 creep 属于您还是其他人。
    */
   my: boolean;
   /**
-   * Creep’s name. You can choose the name while creating a new creep, and it cannot be changed later. This name is a hash key to access the creep via the `Game.creeps` object.
+   * creep 的名字。您可以在创建一个新的 creep 时给它取名，名称一旦指定无法更改。此名称是 `Game.creeps` 对象中指向该 creep 对象的哈希键。你可以使用它来快速访问到该 creep。
    */
   name: string;
   /**
-   * An object with the creep’s owner info.
+   * 该 creep 的所有者信息。
    */
   owner: Owner;
   /**
-   * The link to the Room object. Always defined because creeps give visibility into the room they're in.
+   * Room 对象的链接。如果对象是标志或工地并且放置在你不可见的房间中，则可能为 `undefined`。
    */
   room: Room;
   /**
-   * Whether this creep is still being spawned.
+   * 该 creep 是否仍在孵化中。
    */
   spawning: boolean;
   /**
-   * The text message that the creep was saying at the last tick.
+   * creep 所说的最后一句话。
    */
   saying: string;
   /**
-   * A Store object that contains cargo of this creep.
+   * 一个包含了该建筑中所存储的货物的 [`Store`](https://screeps-cn.github.io/api/#Store) 对象。
    */
   store: StoreDefinition;
   /**
-   * The remaining amount of game ticks after which the creep will die.
+   * 该 creep 还有多少 tick 死亡。
    *
-   * Will be `undefined` if the creep is still spawning.
+   * 当 creep 还正在孵化时，值为 `undefined`。
    */
   ticksToLive: number | undefined;
   /**
-   * Attack another creep or structure in a short-ranged attack. Needs the
-   * ATTACK body part. If the target is inside a rampart, then the rampart is
-   * attacked instead.
+   * 使用近战攻击其他 creep、超能(power) creep 或建筑。需要 ATTACK 身体部件。如果目标在 rampart 中，则优先攻击 rampart。
    *
-   * The target has to be at adjacent square to the creep. If the target is a
-   * creep with ATTACK body parts and is not inside a rampart, it will
-   * automatically hit back at the attacker.
+   * 目标必须与 creep 相邻，如果目标是一个带有 ATTACK 身体的 creep 并且没有自己没有在 rampart 中，则该目标会自动进行反击。
    *
-   * @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE, ERR_NO_BODYPART
+   * @param target 要攻击的目标
+   *
+   * @returns 如下错误码之一：
+   *
+   * 常量 | 值 | 描述
+   * :---- | :--- | :-----
+   * `OK` | `0` | 这个操作已经成功纳入计划。
+   * `ERR_NOT_OWNER` | `-1` | 你不是这个 creep 的拥有者。
+   * `ERR_BUSY` | `-4` | 这个 creep 依然在孵化中。
+   * `ERR_INVALID_TARGET` | `-7` | 这个目标不是一个有效的攻击目标。
+   * `ERR_NOT_IN_RANGE` | `-9` | 目标太远了。
+   * `ERR_NO_BODYPART` | `-12` | 这个 creep 身上没有 `ATTACK` 部件。
    */
   attack(target: AnyCreep | Structure): CreepActionReturnCode;
   /**
-   * Decreases the controller's downgrade or reservation timer for 1 tick per
-   * every 5 `CLAIM` body parts (so the creep must have at least 5x`CLAIM`).
+   * 攻击时，每个 `CLAIM` 身体部件都能使得房间控制器的降级计时器降低 300 tick，或者将预定计时器降低 1 tick。
    *
-   * The controller under attack cannot be upgraded for the next 1,000 ticks.
-   * The target has to be at adjacent square to the creep.
+   * 如果受到攻击的控制器已经有所属者，则接下来的 1000 tick 将无法升级(upgrade)或再次进行攻击。目标必须与 creep 相邻。
    *
-   * @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE, ERR_NO_BODYPART, ERR_TIRED
+   * @param target 目标房间控制器对象。
+   *
+   * @returns  如下错误码之一：
+   *
+   * 常量 | 值 | 描述
+   * :---- | :--- | :-----
+   * `OK` | `0` | 这个操作已经成功纳入计划。
+   * `ERR_NOT_OWNER` | `-1` | 你不是这个 creep 的拥有者。
+   * `ERR_BUSY` | `-4` | 这个 creep 依然在孵化中。
+   * `ERR_INVALID_TARGET` | `-7` | 该目标不存在有效的所属者或者预订者对象。
+   * `ERR_NOT_IN_RANGE` | `-9` | 目标太远了。
+   * `ERR_TIRED` | `-11` | 您必须等待控制器可以被再次攻击。
+   * `ERR_NO_BODYPART` | `-12` | 这个 creep 身上没有 `CLAIM` 部件。
    */
   attackController(target: StructureController): CreepActionReturnCode;
   /**
-   * Build a structure at the target construction site using carried energy.
-   * Needs WORK and CARRY body parts.
+   * 使用自己携带的能量来在目标工地上建造一个建筑。需要 `WORK` 和 `CARRY` 身体部件。
    *
-   * The target has to be within 3 squares range of the creep.
+   * 目标必须位于以 creep 为中心的 7*7 正方形区域内。
    *
-   * @param target The target object to be attacked.
-   * @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_NOT_ENOUGH_RESOURCES, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE, ERR_NO_BODYPART, ERR_RCL_NOT_ENOUGH
+   * @param target 待建造的目标工地。
+   * @returns 如下错误码之一：
+   *
+   * 常量 | 值 | 描述
+   * :---- | :--- | :-----
+   * `OK` | `0` | 这个操作已经成功纳入计划。
+   * `ERR_NOT_OWNER` | `-1` | 你不是这个 creep 的拥有者。
+   * `ERR_BUSY` | `-4` | 这个 creep 依然在孵化中。
+   * `ERR_NOT_ENOUGH_RESOURCES` | `-6` | 这个 creep 没有携带任何能量。
+   * `ERR_INVALID_TARGET` | `-7` | 该目标不是一个有效的建筑工地(construction site)或者此处无法建造建筑(有可能是 creep 站在该地块上导致的)。
+   * `ERR_NOT_IN_RANGE` | `-9` | 目标太远了。
+   * `ERR_NO_BODYPART` | `-12` | 这个 creep 身上没有 `WORK` 部件。
    */
   build(target: ConstructionSite): CreepActionReturnCode | ERR_NOT_ENOUGH_RESOURCES | ERR_RCL_NOT_ENOUGH;
   /**
-   * Cancel the order given during the current game tick.
-   * @param methodName The name of a creep's method to be cancelled.
-   * @returns Result Code: OK, ERR_NOT_FOUND
+   * 取消当前 tick 中给出的某个指令。
+   * @param methodName 需要被取消的 creep 方法名。
+   * @returns 如下错误码之一：
+   *
+   * 常量 | 值 | 描述
+   * :---- | :--- | :-----
+   * `OK` | `0` | 这个操作被成功取消了。
+   * `ERR_NOT_FOUND` | `-5` | 找不到给出的指令名。
    */
   cancelOrder(methodName: string): OK | ERR_NOT_FOUND;
   /**
-   * Requires the CLAIM body part.
+   * 占领一个中立的房间。
    *
-   * If applied to a neutral controller, claims it under your control.
-   * If applied to a hostile controller, decreases its downgrade or reservation timer depending on the CLAIM body parts count.
+   * 需要 CLAIM 身体部件。
    *
-   * The target has to be at adjacent square to the creep.
-   * @param target The target controller object.
-   * @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_INVALID_TARGET, ERR_FULL, ERR_NOT_IN_RANGE, ERR_NO_BODYPART, ERR_GCL_NOT_ENOUGH
+   * - 目标必须与 creep 相邻。你需要有对应的全局控制等级(Global Control Level)才能占领新的房间。
+   * - 如果你没有足够的 GCL。请考虑[预定(reserving)](https://screeps-cn.github.io/api/#reserveController) 该房间。
+   *
+   * [点击了解更多](https://screeps-cn.github.io/control.html#Global-Control-Level)
+   *
+   * @param target 目标控制中心对象。
+   * @returns 如下错误码之一：
+   *
+   * 常量 | 值 | 描述
+   * :---- | :--- | :-----
+   * `OK` | `0` | 这个操作已经成功纳入计划。
+   * `ERR_NOT_OWNER` | `-1` | 你不是这个 creep 的拥有者。
+   * `ERR_BUSY` | `-4` | 这个 creep 依然在孵化中。
+   * `ERR_NOT_ENOUGH_RESOURCES` | `-6` | 这个 creep 没有携带任何能量。
+   * `ERR_INVALID_TARGET` | `-7` | 目标不是一个有效的中立控制中心对象。
+   * `ERR_FULL` | `-8` | 你不能在新手区占领超过3个房间。
+   * `ERR_NOT_IN_RANGE` | `-9` | 目标太远了。
+   * `ERR_NO_BODYPART` | `-12` | 这个 creep 身上没有 `CLAIM` 部件。
+   * `ERR_GCL_NOT_ENOUGH` | `-15` | 你的全局控制等级不足。
    */
   claimController(target: StructureController): CreepActionReturnCode | ERR_FULL | ERR_GCL_NOT_ENOUGH;
   /**
-   * Dismantles any (even hostile) structure returning 50% of the energy spent on its repair.
+   * 拆解任意可以建造的建筑（即使是敌人的）并且返回 50% 其修理所花的能量。
    *
-   * Requires the WORK body part. If the creep has an empty CARRY body part, the energy is put into it; otherwise it is dropped on the ground.
+   * 需要 `WORK` 身体部件。如果 creep 有空余的 `CARRY` 身体部件，则会直接将能量转移进去；否则能量将掉落在地上。
    *
-   * The target has to be at adjacent square to the creep.
-   * @param target The target structure.
+   * 目标必须与 creep 相邻。
+   * @param target 目标建筑。
    */
   dismantle(target: Structure): CreepActionReturnCode;
   /**

@@ -7,91 +7,102 @@ interface Game {
    */
   cpu: CPU;
   /**
-   * A hash containing all your creeps with creep names as hash keys.
+   * 包含你所有 creep 的 hash，并以 creep 名作为关键字。
    */
   creeps: { [creepName: string]: Creep };
   /**
-   * A hash containing all your flags with flag names as hash keys.
+   * 包含你所有 flag 的 hash，以 flag 名作为关键字。
    */
   flags: { [flagName: string]: Flag };
   /**
-   * Your Global Control Level.
+   * 你的[全局控制等级（Global Control Level）](https://screeps-cn.github.io/control.html#Global-Control-Level)的对象，具有以下属性：
+   *
+   * 参数 | 类型 | 描述
+   * :---- | :--- | :-----
+   * level | `number` | 当前的等级。
+   * progress | `number` | 到下一个等级当前的进展。
+   * progressTotal | `number` | 到下一个等级所需的进展。
    */
   gcl: GlobalControlLevel;
   /**
-   * Your clobal Power Level
+   * 你的全局能量等级（Global Power Level）的对象，具有以下属性：
+   *
+   * 参数 | 类型 | 描述
+   * :---- | :--- | :-----
+   * level | `number` | 当前的等级。
+   * progress | `number` | 到下一个等级当前的进展。
+   * progressTotal | `number` | 到下一个等级所需的进展。
    */
   gpl: GlobalPowerLevel;
   /**
-   * A global object representing world GameMap.
+   * 表示世界地图的全局对象。请参照此[文档](https://screeps-cn.github.io/api/#Game-map)。
    */
   map: GameMap;
   /**
-   * A global object representing the in-game market.
+   * 表示游戏内市场的全局对象。请参照此[文档](https://screeps-cn.github.io/api/#Game-market)。
    */
   market: Market;
   /**
-   * A hash containing all your power creeps with their names as hash keys. Even power creeps not spawned in the world can be accessed here.
+   * 包含你所有超能 creep 的 hash，以 creep 名称为键。从这里也可以访问到未孵化的超能 creep。
    */
   powerCreeps: { [creepName: string]: PowerCreep };
   /**
-   * An object with your global resources that are bound to the account, like pixels or cpu unlocks. Each object key is a resource constant, values are resources amounts.
+   * 表示你账户中全局资源的对象，例如 pixel 或 cpu unlock。每个对象的关键字都是一个资源常量，值是资源量。
    */
   resources: { [key: string]: any };
   /**
-   * A hash containing all the rooms available to you with room names as hash keys.
-   * A room is visible if you have a creep or an owned structure in it.
+   * 包含所有对你可用的房间的 hash，以房间名作为关键字。一个房间在你有一个 creep 或者自有建筑在其中时可见。
    */
   rooms: { [roomName: string]: Room };
   /**
-   * A hash containing all your spawns with spawn names as hash keys.
+   * 包含你所有 spawn 的 hash，以 spawn 名作为关键字。
    */
   spawns: { [spawnName: string]: StructureSpawn };
   /**
-   * A hash containing all your structures with structure id as hash keys.
+   * 包含你所有 structures 的 hash，以 structures 名作为关键字。
    */
   structures: { [structureId: string]: Structure };
 
   /**
-   * A hash containing all your construction sites with their id as hash keys.
+   * 包含你所有施工工地的 hash，并以 id 作为关键字。
    */
   constructionSites: { [constructionSiteId: string]: ConstructionSite };
 
   /**
-   * An object describing the world shard where your script is currently being executed in.
+   * 表示当前正在执行脚本的 shard 的对象。
    */
   shard: Shard;
 
   /**
-   * System game tick counter. It is automatically incremented on every tick.
+   * 系统游戏 tick 计数。他在每个 tick 自动递增。点此[了解更多](https://screeps-cn.github.io/game-loop.html)。
    */
   time: number;
 
   /**
-   * Get an object with the specified unique ID. It may be a game object of any type. Only objects from the rooms which are visible to you can be accessed.
+   * 获取具有唯一指定 ID 的对象。 它可以是任何类型的游戏对象。 只能访问您可见的房间内的物体。
    * @param id The unique identifier.
-   * @returns an object instance or null if it cannot be found.
+   * @returns 返回一个对象实例，若找不到则返回 `null`。
    */
   getObjectById<T>(id: Id<T>): T | null;
 
   /**
-   * Get an object with the specified unique ID. It may be a game object of any type. Only objects from the rooms which are visible to you can be accessed.
+   * 获取具有唯一指定 ID 的对象。 它可以是任何类型的游戏对象。 只能访问您可见的房间内的物体。
    * @param id The unique identifier.
-   * @returns an object instance or null if it cannot be found.
-   * @deprecated Use Id<T>, instead of strings, to increase type safety
+   * @returns 返回一个对象实例，若找不到则返回 `null`。
+   * @deprecated Use `Id<T>`, instead of strings, to increase type safety
    */
   // eslint-disable-next-line @typescript-eslint/unified-signatures
   getObjectById<T>(id: string): T | null;
 
   /**
-   * Send a custom message at your profile email.
+   * 向你的个人资料中的邮件发送信息。
    *
-   * This way, you can set up notifications to yourself on any occasion within the game.
+   * 由此，你可以在游戏中的任何场合为自己设置通知
    *
-   * You can schedule up to 20 notifications during one game tick. Not available in the Simulation Room.
-   * @param message Custom text which will be sent in the message. Maximum length is 1000 characters.
-   * @param groupInterval If set to 0 (default), the notification will be scheduled immediately.
-   * Otherwise, it will be grouped with other notifications and mailed out later using the specified time in minutes.
+   * 你最多可以安排 20 个通知。在模拟模式中不可用。
+   *
+   * @param 将在消息中发送的自定义文本。最大长度为 `1000` 个字符。
+   * @param 如果被设为 `0` (默认), 通知将被立即安排。否早他将于其他通知编组，并在指定的时间（分钟）寄出。
    */
   notify(message: string, groupInterval?: number): undefined;
 }
