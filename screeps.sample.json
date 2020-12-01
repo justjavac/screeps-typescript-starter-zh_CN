@@ -25,9 +25,9 @@
   },
   "pserver": {
     "email": "username",
-    "password": "Password",
+    "password": "********",
     "protocol": "http",
-    "hostname": "screeps.jjc.fun",
+    "hostname": "screeps.devtips.cn",
     "port": 21025,
     "path": "/",
     "branch": "main"

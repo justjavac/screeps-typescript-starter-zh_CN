@@ -1,45 +1,17 @@
-import { ErrorMapper } from "utils/ErrorMapper";
+import * as building from "building";
+import * as tower from "tower";
 
 import { roleBuilder } from "role/builder";
 import { roleHarvester } from "role/harvester";
 import { roleUpgrader } from "role/upgrader";
 
-export const loop = ErrorMapper.wrapLoop(() => {
-  const tower = Game.getObjectById("TOWER_ID" as Id<StructureTower>);
-  if (tower) {
-    const closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: structure => structure.hits < structure.hitsMax
-    });
-    if (closestDamagedStructure) {
-      tower.repair(closestDamagedStructure);
-    }
+export const loop = function (): void {
+  building.run(Game.spawns.Spawn1);
 
-    const closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-    if (closestHostile) {
-      tower.attack(closestHostile);
-    }
-  }
-
-  const harvesters = _.filter(Game.creeps, creep => creep.memory.role === "harvester");
-  if (harvesters.length < 2) {
-    const name = `H${Date.now() % 1000}`;
-    const opts = { memory: { role: "harvester" } };
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], name, opts as any);
-  }
-
-  const upgraders = _.filter(Game.creeps, creep => creep.memory.role === "upgrader");
-  if (upgraders.length < 2) {
-    const name = `U${Date.now() % 1000}`;
-    const opts = { memory: { role: "upgrader" } };
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], name, opts as any);
-  }
-
-  const builders = _.filter(Game.creeps, creep => creep.memory.role === "builder");
-  if (builders.length < 2) {
-    const name = `B${Date.now() % 1000}`;
-    const opts = { memory: { role: "builder" } };
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], name, opts as any);
-  }
+  const towers = Game.spawns.Spawn1.room.find<StructureTower>(FIND_STRUCTURES, {
+    filter: { structureType: STRUCTURE_TOWER, my: true }
+  });
+  towers.forEach(tower.run);
 
   for (const name in Game.creeps) {
     const creep = Game.creeps[name];
@@ -58,6 +30,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
   for (const name in Memory.creeps) {
     if (!(name in Game.creeps)) {
       delete Memory.creeps[name];
+      console.log("Clearing non-existing creep memory:", name);
     }
   }
-});
+};

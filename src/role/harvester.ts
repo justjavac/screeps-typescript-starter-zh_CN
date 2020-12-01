@@ -1,24 +1,32 @@
 export const roleHarvester = {
   run(creep: Creep): void {
-    if (creep.store.getFreeCapacity() > 0) {
-      const sources = creep.room.find(FIND_SOURCES);
-      if (creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources[0], { visualizePathStyle: { stroke: "#ffaa00" } });
+    if (creep.memory.unloading && creep.store.energy === 0) {
+      creep.memory.unloading = false;
+      creep.say("harvesting");
+    }
+    if (!creep.memory.unloading && creep.store.energy === creep.store.getCapacity()) {
+      creep.memory.unloading = true;
+      creep.say("unloading");
+    }
+    if (!creep.memory.unloading) {
+      const source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+      if (source && creep.harvest(source) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(source);
       }
     } else {
-      const targets = creep.room.find(FIND_STRUCTURES, {
+      const target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: structure => {
           return (
             (structure.structureType === STRUCTURE_EXTENSION ||
               structure.structureType === STRUCTURE_SPAWN ||
               structure.structureType === STRUCTURE_TOWER) &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            structure.energy < structure.energyCapacity
           );
         }
       });
-      if (targets.length > 0) {
-        if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#ffffff" } });
+      if (target) {
+        if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(target);
         }
       }
     }
