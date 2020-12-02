@@ -1,9 +1,6 @@
 {
-  "name": "screeps-typescript-starter",
-  "version": "3.0.0",
-  "description": "",
-  "main": "index.js",
-  "//": "If you add or change the names of destinations in screeps.json, make sure you update these scripts to reflect the changes",
+  "name": "screeps-typescript-starter-zh_cn",
+  "private": true,
   "scripts": {
     "lint": "eslint \"src/**/*.ts\"",
     "build": "rollup -c",
@@ -15,19 +12,6 @@
     "watch-pserver": "rollup -cw --environment DEST:pserver",
     "watch-season": "rollup -cw --environment DEST:season",
     "watch-sim": "rollup -cw --environment DEST:sim"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/screepers/screeps-typescript-starter.git"
-  },
-  "author": "",
-  "license": "Unlicense",
-  "bugs": {
-    "url": "https://github.com/screepers/screeps-typescript-starter/issues"
-  },
-  "homepage": "https://github.com/screepers/screeps-typescript-starter#readme",
-  "engines": {
-    "node": "10.x || 12.x"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
