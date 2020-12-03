@@ -1,41 +1,40 @@
 /**
- * Parent object for structure classes
+ * 所有建筑的基础原型对象。
  */
 interface Structure<T extends StructureConstant = StructureConstant> extends RoomObject {
   readonly prototype: Structure;
 
   /**
-   * The current amount of hit points of the structure.
+   * 当前这个建筑的当前生命值。
    */
   hits: number;
   /**
-   * The total amount of hit points of the structure.
+   * 这个建筑的最大生命值。
    */
   hitsMax: number;
   /**
-   * A unique object identifier. You can use Game.getObjectById method to retrieve an object instance by its id.
+   * 一个唯一的对象标识。你可以使用 [`Game.getObjectById`](https://screeps-cn.github.io/api/#Game.getObjectById) 方法获取对象实例。
    */
   id: Id<this>;
   /**
-   * If you can get an instance of a Structure, you can see it.
-   * If you can see the Structure, you can see the room it's in.
+   * Room 对象的链接。如果对象是标志或工地并且放置在你不可见的房间中，则可能为 `undefined`。
    */
   room: Room;
   /**
-   * One of the STRUCTURE_* constants.
+   * `STRUCTURE_*` 常量之一。
    */
   structureType: T;
   /**
-   * Destroy this structure immediately.
+   * 立即摧毁这个建筑。
    */
   destroy(): ScreepsReturnCode;
   /**
-   * Check whether this structure can be used. If the room controller level is not enough, then this method will return false, and the structure will be highlighted with red in the game.
+   * 检查这个建筑是否可用。如果房间控制等级不足，这个方法会返回 `false`，并且这个建筑会在游戏中红色高亮。
    */
   isActive(): boolean;
   /**
-   * Toggle auto notification when the structure is under attack. The notification will be sent to your account email. Turned on by default.
-   * @param enabled Whether to enable notification or disable.
+   * 切换这个建筑受到攻击时的自动通知。通知会发送到你的账户邮箱。默认开启。
+   * @param enabled 是否启用通知。
    */
   notifyWhenAttacked(enabled: boolean): ScreepsReturnCode;
 }
@@ -45,22 +44,21 @@ interface StructureConstructor extends _Constructor<Structure>, _ConstructorById
 declare const Structure: StructureConstructor;
 
 /**
- * The base prototype for a structure that has an owner. Such structures can be
- * found using `FIND_MY_STRUCTURES` and `FIND_HOSTILE_STRUCTURES` constants.
+ * 存在拥有者的建筑的基础原型。 这类建筑可以被用 `FIND_MY_STRUCTURES` 或 `FIND_HOSTILE_STRUCTURES` 找到。
  */
 interface OwnedStructure<T extends StructureConstant = StructureConstant> extends Structure<T> {
   readonly prototype: OwnedStructure;
 
   /**
-   * Whether this is your own structure. Walls and roads don't have this property as they are considered neutral structures.
+   * 是否是你拥有的建筑。
    */
   my: boolean;
   /**
-   * An object with the structure’s owner info (if present) containing the following properties: username
+   * 建筑拥有者信息
    */
   owner: T extends STRUCTURE_CONTROLLER ? Owner | undefined : Owner;
   /**
-   * The link to the Room object. Is always present because owned structures give visibility.
+   * Room 对象的链接
    */
   room: Room;
 }
@@ -70,66 +68,64 @@ interface OwnedStructureConstructor extends _Constructor<OwnedStructure>, _Const
 declare const OwnedStructure: OwnedStructureConstructor;
 
 /**
- * Claim this structure to take control over the room. The controller structure
- * cannot be damaged or destroyed. It can be addressed by `Room.controller`
- * property.
+ * 占领(claim) 这个建筑来控制其所在的房间。控制器无法被攻击或摧毁。你可以通过 `Room.controller` 属性来快速访问到它。
  */
 interface StructureController extends OwnedStructure<STRUCTURE_CONTROLLER> {
   readonly prototype: StructureController;
 
   /**
-   * Whether using power is enabled in this room.
+   * 该房间是否启用了超能 (power)。
    *
-   * Use `PowerCreep.enableRoom()` to turn powers on.
+   * 使用 [`PowerCreep.enableRoom`](https://screeps-cn.github.io/api/#PowerCreep.enableRoom) 来启用超能。
    */
   isPowerEnabled: boolean;
   /**
-   * Current controller level, from 0 to 8.
+   * 当前的控制器等级，从 `0` 到 `8`。
    */
   level: number;
   /**
-   * The current progress of upgrading the controller to the next level.
+   * 当前控制器升级到下个等级的进度。
    */
   progress: number;
   /**
-   * The progress needed to reach the next level.
+   * 控制器升级到下个等级所需的总进度。
    */
   progressTotal: number;
   /**
-   * An object with the controller reservation info if present: username, ticksToEnd
+   * 如果控制器被预定，则该对象表示预定的信息
    */
   reservation: ReservationDefinition | undefined;
   /**
-   * How many ticks of safe mode are remaining, or undefined.
+   * 安全模式还有多少 tick 结束。没激活安全模式时返回 `undefined`。
    */
   safeMode?: number;
   /**
-   * Safe mode activations available to use.
+   * 可用的安全模式激活次数。
    */
   safeModeAvailable: number;
   /**
-   * During this period in ticks new safe mode activations will be blocked, undefined if cooldown is inactive.
+   * 安全模式的冷却时间还有多少 tick。冷却结束前将无法激活安全模式，当安全模式没有冷却时返回 `undefined`。
    */
   safeModeCooldown?: number;
   /**
-   * An object with the controller sign info if present
+   * 如果控制器被签名，则该对象表示签名的信息
    */
   sign: SignDefinition | undefined;
   /**
-   * The amount of game ticks when this controller will lose one level. This timer can be reset by using Creep.upgradeController.
+   * 该控制器还有多少 tick 将要降级。当控制器升级或者降级时, 该计时器将被设置为总降级时间的 50%。可以使用 [`Creep.upgradeController`](https://screeps-cn.github.io/api/#Creep.upgradeController) 来增加该计时器的时间。控制器想要升级必须先保证该计时器满额。
    */
   ticksToDowngrade: number;
   /**
-   * The amount of game ticks while this controller cannot be upgraded due to attack.
+   * 还有多少 tick 就能从控制器被攻击从而无法升级的状态中恢复过来。在此期间安全模式也不可用。
    */
   upgradeBlocked: number;
   /**
-   * Activate safe mode if available.
+   * 激活安全模式 (如果有的话)。
    * @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_NOT_ENOUGH_RESOURCES, ERR_TIRED
    */
   activateSafeMode(): ScreepsReturnCode;
   /**
-   * Make your claimed controller neutral again.
+   * 放弃该房间，使得控制器重新变为中立状态。
    */
   unclaim(): ScreepsReturnCode;
 }
@@ -141,26 +137,22 @@ interface StructureControllerConstructor
 declare const StructureController: StructureControllerConstructor;
 
 /**
- * Contains energy which can be spent on spawning bigger creeps. Extensions can
- * be placed anywhere in the room, any spawns will be able to use them regardless
- * of distance.
+ * 填充能量从而允许建造更大型的 creep。Extension 可以被放置在房间的任何地方，无论距离有多远，任何 spawn 都可以使用其中的能量进行孵化。
  */
 interface StructureExtension extends OwnedStructure<STRUCTURE_EXTENSION> {
   readonly prototype: StructureExtension;
 
   /**
-   * The amount of energy containing in the extension.
-   * @deprecated An alias for .store[RESOURCE_ENERGY].
+   * @deprecated 已废弃。使用 `.store[RESOURCE_ENERGY]` 代替。
    */
   energy: number;
   /**
-   * The total amount of energy the extension can contain.
-   * @deprecated An alias for .store.getCapacity(RESOURCE_ENERGY).
+   * @deprecated 已废弃。使用 `.store.getCapacity(RESOURCE_ENERGY) 代替。
    */
   energyCapacity: number;
 
   /**
-   * A Store object that contains cargo of this structure.
+   * 一个包含了该建筑中所存储的货物的 `Store` 对象。
    */
   store: Store<RESOURCE_ENERGY, false>;
 }
@@ -172,7 +164,7 @@ interface StructureExtensionConstructor
 declare const StructureExtension: StructureExtensionConstructor;
 
 /**
- * Remotely transfers energy to another Link in the same room.
+ * 将能量远程传输到同一房间的另一个 Link 中。
  */
 interface StructureLink extends OwnedStructure<STRUCTURE_LINK> {
   readonly prototype: StructureLink;

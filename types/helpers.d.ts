@@ -166,13 +166,19 @@ interface Owner {
   username: string;
 }
 interface ReservationDefinition {
+  /** 预定了该房间的玩家名称。 */
   username: string;
+  /** 预定时间还有多少 tick 结束。 */
   ticksToEnd: number;
 }
 interface SignDefinition {
+  /** 将控制器签名的玩家名称。 */
   username: string;
+  /** 签名的文本内容。 */
   text: string;
+  /** 进行签名的游戏 tick 时间。 */
   time: number;
+  /** 进行签名的现实时间。 */
   datetime: Date;
 }
 
