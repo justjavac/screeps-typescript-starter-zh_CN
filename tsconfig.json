@@ -16,6 +16,10 @@
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false
   },
+  "include": [
+    "src",
+    "types"
+  ],
   "exclude": [
     "node_modules"
   ]

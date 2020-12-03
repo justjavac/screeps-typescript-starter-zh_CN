@@ -87,7 +87,7 @@ module.exports = {
   },
   "overrides": [
     {
-        "files": ["src/types/**"],
+        "files": ["types/**"],
         "rules": {
           "@typescript-eslint/no-empty-interface": "off",
           "camelcase": "off"
