@@ -10,16 +10,13 @@ module.exports = {
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:prettier/recommended",
     "prettier/@typescript-eslint",
-    "plugin:import/errors",
-    "plugin:import/warnings",
-    "plugin:import/typescript"
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: "tsconfig.json",
     sourceType: "module"
   },
-  plugins: ["@typescript-eslint", "import"],
+  plugins: ["@typescript-eslint"],
   settings: {
     "import/parsers": {
       "@typescript-eslint/parser": [".ts", ".tsx"]
@@ -30,6 +27,7 @@ module.exports = {
   },
   rules: {
     "@typescript-eslint/array-type": "error",
+    "@typescript-eslint/restrict-plus-operands": "off",
     "@typescript-eslint/consistent-type-assertions": "error",
     "@typescript-eslint/consistent-type-definitions": "error",
     "@typescript-eslint/explicit-function-return-type": "off",
@@ -46,6 +44,7 @@ module.exports = {
     "@typescript-eslint/prefer-for-of": "error",
     "@typescript-eslint/space-within-parens": ["off", "never"],
     "@typescript-eslint/unified-signatures": "error",
+    "@typescript-eslint/no-for-in-array": "off",
     "arrow-parens": ["off", "as-needed"],
     camelcase: "error",
     complexity: "off",
@@ -67,12 +66,6 @@ module.exports = {
     "no-invalid-this": "off",
     "no-multiple-empty-lines": "off",
     "no-new-wrappers": "error",
-    "no-shadow": [
-      "error",
-      {
-        hoist: "all"
-      }
-    ],
     "no-throw-literal": "error",
     "no-trailing-spaces": "off",
     "no-undef-init": "error",
