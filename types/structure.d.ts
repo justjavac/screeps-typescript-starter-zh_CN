@@ -170,33 +170,33 @@ interface StructureLink extends OwnedStructure<STRUCTURE_LINK> {
   readonly prototype: StructureLink;
 
   /**
-   * The amount of game ticks the link has to wait until the next transfer is possible.
+   * 下次传输之前还需多少 tick 的冷却。
    */
   cooldown: number;
   /**
-   * The amount of energy containing in the link.
-   * @deprecated An alias for .store[RESOURCE_ENERGY].
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store[RESOURCE_ENERGY]` 的别名。
    */
   energy: number;
   /**
-   * The total amount of energy the link can contain.
-   * @deprecated An alias for .store.getCapacity(RESOURCE_ENERGY).
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store.getCapacity(RESOURCE_ENERGY)` 的别名。
    */
   energyCapacity: number;
   /**
-   * A Store object that contains cargo of this structure.
+   * 一个包含了该建筑中所存储资源的 [`Store`](https://screeps-cn.github.io/api/#Store) 对象。
    */
   store: Store<RESOURCE_ENERGY, false>;
   /**
-   * Transfer energy from the link to another link or a creep.
+   * 将能量远程传输到同一房间中任何位置的另一个 Link 中。
    *
    * If the target is a creep, it has to be at adjacent square to the link.
    *
    * If the target is a link, it can be at any location in the same room.
    *
    * Remote transfer process implies 3% energy loss and cooldown delay depending on the distance.
-   * @param target The target object.
-   * @param amount The amount of energy to be transferred. If omitted, all the available energy is used.
+   * @param target 目标对象。
+   * @param amount 将要传输的能量值。如果省略，所有能量都将被传输。
    */
   transferEnergy(target: Creep | StructureLink, amount?: number): ScreepsReturnCode;
 }
@@ -206,14 +206,13 @@ interface StructureLinkConstructor extends _Constructor<StructureLink>, _Constru
 declare const StructureLink: StructureLinkConstructor;
 
 /**
- * Non-player structure. Spawns NPC Source Keepers that guards energy sources
- * and minerals in some rooms. This structure cannot be destroyed.
+ * 非玩家建筑。孵化 NPC 资源守护者（Source Keeper）来守卫某些房间中的能量 source 和 mineral。该建筑无法被摧毁。
  */
 interface StructureKeeperLair extends OwnedStructure<STRUCTURE_KEEPER_LAIR> {
   readonly prototype: StructureKeeperLair;
 
   /**
-   * Time to spawning of the next Source Keeper.
+   * 距离孵化下一个资源守护者还有多少 tick。
    */
   ticksToSpawn?: number;
 }
@@ -225,14 +224,14 @@ interface StructureKeeperLairConstructor
 declare const StructureKeeperLair: StructureKeeperLairConstructor;
 
 /**
- * Provides visibility into a distant room from your script.
+ * 为你的代码提供远处房间的视野。
  */
 interface StructureObserver extends OwnedStructure<STRUCTURE_OBSERVER> {
   readonly prototype: StructureObserver;
 
   /**
-   * Provide visibility into a distant room from your script. The target room object will be available on the next tick. The maximum range is 5 rooms.
-   * @param roomName The room to observe.
+   * 为你的代码提供远处房间的视野。目标房间将在下一个 tick 可见。最大范围为 5 房间。
+   * @param roomName 目标房间名。
    */
   observeRoom(roomName: string): ScreepsReturnCode;
 }
@@ -242,17 +241,19 @@ interface StructureObserverConstructor extends _Constructor<StructureObserver>, 
 declare const StructureObserver: StructureObserverConstructor;
 
 /**
- * Non-player structure. Contains power resource which can be obtained by destroying the structure. Hits the attacker creep back on each attack.
+ * 非玩家建筑。储存着超能资源，可以通过摧毁该建筑获得。
+ * 攻击该建筑的 creep 每次攻击都会承受反弹回来的伤害。
+ * 点击[本文](https://screeps-cn.github.io/power.html)了解更多关于超能的信息。
  */
 interface StructurePowerBank extends OwnedStructure<STRUCTURE_POWER_BANK> {
   readonly prototype: StructurePowerBank;
 
   /**
-   * The amount of power containing.
+   * 储存的 power 容量。
    */
   power: number;
   /**
-   * The amount of game ticks when this structure will disappear.
+   * 该建筑还有多少 tick 就要因老化而消失。
    */
   ticksToDecay: number;
 }
@@ -264,38 +265,37 @@ interface StructurePowerBankConstructor
 declare const StructurePowerBank: StructurePowerBankConstructor;
 
 /**
- * Non-player structure. Contains power resource which can be obtained by
- * destroying the structure. Hits the attacker creep back on each attack.
+ * 提炼超能 (power) 并注册到您的账户当中，可以孵化拥有独一无二能力的超能 creep (仍在开发中)。 点击[本文](https://screeps-cn.github.io/power.html)查看跟多有关超能的信息。
  */
 interface StructurePowerSpawn extends OwnedStructure<STRUCTURE_POWER_SPAWN> {
   readonly prototype: StructurePowerSpawn;
   /**
-   * The amount of energy containing in this structure.
-   * @deprecated An alias for .store[RESOURCE_ENERGY].
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store[RESOURCE_ENERGY]` 的别名。
    */
   energy: number;
   /**
-   * The total amount of energy this structure can contain.
-   * @deprecated An alias for .store.getCapacity(RESOURCE_ENERGY).
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store.getCapacity(RESOURCE_ENERGY)` 的别名。
    */
   energyCapacity: number;
   /**
-   * The amount of power containing in this structure.
-   * @deprecated An alias for .store[RESOURCE_POWER].
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store[RESOURCE_POWER]` 的别名。
    */
   power: number;
   /**
-   * The total amount of power this structure can contain.
-   * @deprecated An alias for .store.getCapacity(RESOURCE_POWER).
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store.getCapacity(RESOURCE_POWER)` 的别名。
    */
   powerCapacity: number;
   /**
-   *
+   * 一个包含了该建筑中所存储的货物的 [`Store`](https://screeps-cn.github.io/api/#Store) 对象。
    */
   store: Store<RESOURCE_ENERGY | RESOURCE_POWER, false>;
 
   /**
-   * Register power resource units into your account. Registered power allows to develop power creeps skills. Consumes 1 power resource unit and 50 energy resource units.
+   * 将超能 (power) 资源注册到您的账户当中。注册超能允许开发超能 creep 的技能。
    */
   processPower(): ScreepsReturnCode;
 }
@@ -307,25 +307,24 @@ interface StructurePowerSpawnConstructor
 declare const StructurePowerSpawn: StructurePowerSpawnConstructor;
 
 /**
- * Blocks movement of hostile creeps, and defends your creeps and structures on
- * the same tile. Can be used as a controllable gate.
+ * 阻挡敌方 creep 的移动。并防御本格空间上的我方建筑和 creep。可以当做可控门来进行使用。
  */
 interface StructureRampart extends OwnedStructure<STRUCTURE_RAMPART> {
   readonly prototype: StructureRampart;
 
   /**
-   * The amount of game ticks when this rampart will lose some hit points.
+   * 还有多少 tick 就要因老化而失去生命值。
    */
   ticksToDecay: number;
 
   /**
-   * If false (default), only your creeps can step on the same square. If true, any hostile creeps can pass through.
+   * 当值为 `false` (默认) 时。只有你的 creep 能通过。当值为 `true` 时，任何玩家的 creep 都可以通过。
    */
   isPublic: boolean;
 
   /**
-   * Make this rampart public to allow other players' creeps to pass through.
-   * @param isPublic Whether this rampart should be public or non-public
+   * 将该 rampart 的状态设置为开放，从而允许其他玩家的 creep 通过。
+   * @param isPublic 该 rampart 是否开放
    */
   setPublic(isPublic: boolean): undefined;
 }
@@ -335,14 +334,14 @@ interface StructureRampartConstructor extends _Constructor<StructureRampart>, _C
 declare const StructureRampart: StructureRampartConstructor;
 
 /**
- * Decreases movement cost to 1. Using roads allows creating creeps with less
- * `MOVE` body parts.
+ * 将每个身体部件的移动成本降低至 `1`。建造道路之后，你就可以用更少的 `MOVE` 身体部件来孵化一个 creep。
+ * 你也可以在自然墙壁上建造一个道路来使其可以通行。
  */
 interface StructureRoad extends Structure<STRUCTURE_ROAD> {
   readonly prototype: StructureRoad;
 
   /**
-   * The amount of game ticks when this road will lose some hit points.
+   * 还有多少 tick 就要因老化而失去生命值。
    */
   ticksToDecay: number;
 }
@@ -352,19 +351,18 @@ interface StructureRoadConstructor extends _Constructor<StructureRoad>, _Constru
 declare const StructureRoad: StructureRoadConstructor;
 
 /**
- * A structure that can store huge amount of resource units. Only one structure
- * per room is allowed that can be addressed by `Room.storage` property.
+ * 可以储存大量资源的建筑。每个房间内仅允许建造一个，所以你可以使用 `Room.storage` 属性来快速访问它。
  */
 interface StructureStorage extends OwnedStructure<STRUCTURE_STORAGE> {
   readonly prototype: StructureStorage;
 
   /**
-   * An object with the storage contents.
+   * 一个包含了该建筑中所存储的货物的 Store 对象。
    */
   store: StoreDefinition;
   /**
-   * The total amount of resources the storage can contain.
-   * @deprecated An alias for .store.getCapacity().
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store.getCapacity()` 属性的别名。
    */
   storeCapacity: number;
 }
@@ -374,41 +372,39 @@ interface StructureStorageConstructor extends _Constructor<StructureStorage>, _C
 declare const StructureStorage: StructureStorageConstructor;
 
 /**
- * Remotely attacks or heals creeps, or repairs structures. Can be targeted to
- * any object in the room. However, its effectiveness highly depends on the
- * distance. Each action consumes energy.
+ * 远程攻击 creep，治疗 creep，或维修建筑。房间里的任意对象都可以指定为它的目标。然而，效果线性地取决距离。每一个动作都会消耗能量。
  */
 interface StructureTower extends OwnedStructure<STRUCTURE_TOWER> {
   readonly prototype: StructureTower;
 
   /**
-   * The amount of energy containing in this structure.
-   * @deprecated An alias for .store[RESOURCE_ENERGY].
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store[RESOURCE_ENERGY]` 的别名。
    */
   energy: number;
   /**
-   * The total amount of energy this structure can contain.
-   * @deprecated An alias for .store.getCapacity(RESOURCE_ENERGY).
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store.getCapacity(RESOURCE_ENERGY)` 的别名。
    */
   energyCapacity: number;
   /**
-   * A Store object that contains cargo of this structure.
+   * 一个代表这该结构所存储能量的 `Store` 对象。
    */
   store: Store<RESOURCE_ENERGY, false>;
 
   /**
-   * Remotely attack any creep or structure in the room. Consumes 10 energy units per tick. Attack power depends on the distance to the target: from 600 hits at range 10 to 300 hits at range 40.
-   * @param target The target creep.
+   * 远程攻击房间里的任意 creep、超能 creep 或房间内的结构。
+   * @param target 目标 creep。
    */
   attack(target: AnyCreep | Structure): ScreepsReturnCode;
   /**
-   * Remotely heal any creep in the room. Consumes 10 energy units per tick. Heal power depends on the distance to the target: from 400 hits at range 10 to 200 hits at range 40.
-   * @param target The target creep.
+   * 远程治疗房间里的任意 creep 或超能 creep。
+   * @param target 目标 creep。
    */
   heal(target: AnyCreep): ScreepsReturnCode;
   /**
-   * Remotely repair any structure in the room. Consumes 10 energy units per tick. Repair power depends on the distance to the target: from 600 hits at range 10 to 300 hits at range 40.
-   * @param target The target structure.
+   * 远程维修房间里的任意建筑。
+   * @param target 目标建筑。
    */
   repair(target: Structure): ScreepsReturnCode;
 }
@@ -418,12 +414,14 @@ interface StructureTowerConstructor extends _Constructor<StructureTower>, _Const
 declare const StructureTower: StructureTowerConstructor;
 
 /**
- * Blocks movement of all creeps.
+ * 阻挡所有 creep 的移动。 玩家可以在已控制的房间中建造可破坏的构筑墙。
+ * 有些房间还包含不可破坏的构筑墙，将新手区或重生区与世界其他地方隔开，又或将新手/重生区划分为较小的区域。
+ * 不可破坏的构筑墙没有 `hits` 属性。
  */
 interface StructureWall extends Structure<STRUCTURE_WALL> {
   readonly prototype: StructureWall;
   /**
-   * The amount of game ticks when the wall will disappear (only for automatically placed border walls at the start of the game).
+   * 该 wall 还有多少 tick 死亡(only for automatically placed border walls at the start of the game)。
    */
   ticksToLive: number;
 }
@@ -433,12 +431,12 @@ interface StructureWallConstructor extends _Constructor<StructureWall>, _Constru
 declare const StructureWall: StructureWallConstructor;
 
 /**
- * Allows to harvest mineral deposits.
+ * 允许采集矿藏 (Mineral)，点击 [本文](https://screeps-cn.github.io/resources.html) 查看更多关于矿物的内容。
  */
 interface StructureExtractor extends OwnedStructure<STRUCTURE_EXTRACTOR> {
   readonly prototype: StructureExtractor;
   /**
-   * The amount of game ticks until the next harvest action is possible.
+   * 还有多少 tick 才能进行下次采集 (harvest) 操作。
    */
   cooldown: number;
 }
@@ -450,58 +448,57 @@ interface StructureExtractorConstructor
 declare const StructureExtractor: StructureExtractorConstructor;
 
 /**
- * Produces mineral compounds from base minerals and boosts creeps.
+ * 使用基础矿物生产化合物，强化(boost) creep 和清除强化。 点击本文来了解更多关于矿物的信息。
  */
 interface StructureLab extends OwnedStructure<STRUCTURE_LAB> {
   readonly prototype: StructureLab;
   /**
-   * The amount of game ticks the lab has to wait until the next reaction is possible.
+   * 下次反应或者清除强化之前还需等待多少 tick 的冷却。
    */
   cooldown: number;
   /**
-   * The amount of energy containing in the lab. Energy is used for boosting creeps.
-   * @deprecated An alias for .store[RESOURCE_ENERGY].
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store[RESOURCE_ENERGY]` 的别名。
    */
   energy: number;
   /**
-   * The total amount of energy the lab can contain.
-   * @deprecated An alias for .store.getCapacity(RESOURCE_ENERGY).
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store.getCapacity(RESOURCE_ENERGY)` 的别名。
    */
   energyCapacity: number;
   /**
-   * The amount of mineral resources containing in the lab.
-   * @deprecated An alias for lab.store[lab.mineralType].
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `lab.store[lab.mineralType]` 的别名。
    */
   mineralAmount: number;
   /**
-   * The type of minerals containing in the lab. Labs can contain only one mineral type at the same time.
-   * Null in case there is no mineral resource in the lab.
+   * 该 lab 储存的矿物类型。lab 同一时间内只能储存一种类型的矿物。
+   * `null` in case there is no mineral resource in the lab.
    */
   mineralType: MineralConstant | MineralCompoundConstant | null;
   /**
-   * The total amount of minerals the lab can contain.
-   * @deprecated An alias for lab.store.getCapacity(lab.mineralType || yourMineral).
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `lab.store.getCapacity(lab.mineralType || yourMineral)` 的别名。
    */
   mineralCapacity: number;
   /**
-   * A Store object that contains cargo of this structure.
+   * 一个包含了该建筑中所存储资源的 `Store` 对象。
    */
   store: Store<RESOURCE_ENERGY | MineralConstant | MineralCompoundConstant, false>;
   /**
-   * Boosts creep body part using the containing mineral compound. The creep has to be at adjacent square to the lab. Boosting one body part consumes 30 mineral units and 20 energy units.
-   * @param creep The target creep.
-   * @param bodyPartsCount The number of body parts of the corresponding type to be boosted.
+   * 使用存储中的矿物强化 creep 的身体部件。creep 必须在相邻与 lab 的正方形区域内。
+   * @param creep 目标 creep。
+   * @param bodyPartsCount 要强化的指定身体部件的数量。
    *
-   * Body parts are always counted left-to-right for TOUGH, and right-to-left for other types.
+   * `TOUGH` 身体部件始终是从左到右进行强化，而其他部件则是从右到左。
    *
-   * If undefined, all the eligible body parts are boosted.
+   * 如果 `undefined`，则对所有合适的身体部件进行强化。
    */
   boostCreep(creep: Creep, bodyPartsCount?: number): ScreepsReturnCode;
   /**
-   * Immediately remove boosts from the creep and drop 50% of the mineral compounds used to boost it onto the ground regardless of the creep's remaining time to live.
-   * The creep has to be at adjacent square to the lab.
-   * Unboosting requires cooldown time equal to the total sum of the reactions needed to produce all the compounds applied to the creep.
-   * @param creep The target creep.
+   * 立刻从 creep 身上移除强化并将强化所需的 50% 化合物丢弃在地面上，该操作不会关心 creep 的剩余存活时间。
+   * creep 必须在紧邻 lab 的正方形区域内。清除强化所需的冷却时间等于生产强化该 creep 所需化合物的总时间。
+   * @param creep 目标 creep。
    */
   unboostCreep(creep: Creep): ScreepsReturnCode;
   /**
@@ -511,9 +508,9 @@ interface StructureLab extends OwnedStructure<STRUCTURE_LAB> {
    */
   reverseReaction(lab1: StructureLab, lab2: StructureLab): ScreepsReturnCode;
   /**
-   * Produce mineral compounds using reagents from two another labs. Each lab has to be within 2 squares range. The same input labs can be used by many output labs
-   * @param lab1 The first source lab.
-   * @param lab2 The second source lab.
+   * 将化合物还原为其反应底物。同一个输出 lab 可以和多个输入 lab 进行反应。
+   * @param lab1 第一个输出 lab。
+   * @param lab2 第二个输出 lab。
    */
   runReaction(lab1: StructureLab, lab2: StructureLab): ScreepsReturnCode;
 }
@@ -523,29 +520,35 @@ interface StructureLabConstructor extends _Constructor<StructureLab>, _Construct
 declare const StructureLab: StructureLabConstructor;
 
 /**
- * Sends any resources to a Terminal in another room.
+ * 终端可以发送任意资源到另一个房间的终端。目标终端可以属于任何一个玩家。 每个事务都需要额外消耗能量（无论传输资源类型如何），
+ * 可以使用 `Game.market.calcTransactionCost` 计算所需能量。
+ *
+ * 例如，从 W0N0 发送 1000 单位矿物到 W10N5 需要消耗 742 单位能量。 你可以使用 `Game.market` 对象跟踪你的收入和支出事务。
+ * 一个房间只会有一个终端，所以可以通过 `Room.terminal` 属性访问。
+ *
+ * 终端可以用于交易系统.
  */
 interface StructureTerminal extends OwnedStructure<STRUCTURE_TERMINAL> {
   readonly prototype: StructureTerminal;
   /**
-   * The remaining amount of ticks while this terminal cannot be used to make StructureTerminal.send or Game.market.deal calls.
+   * 这个终端不能调用 `StructureTerminal.send` 或 `Game.market.deal` 的剩余 tick。
    */
   cooldown: number;
   /**
-   * A Store object that contains cargo of this structure.
+   * 一个包含了该建筑中所存储资源的 `Store` 对象。
    */
   store: StoreDefinition;
   /**
-   * The total amount of resources the storage can contain.
-   * @deprecated An alias for .store.getCapacity().
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store.getCapacity()` 的别名。
    */
   storeCapacity: number;
   /**
-   * Sends resource to a Terminal in another room with the specified name.
-   * @param resourceType One of the RESOURCE_* constants.
-   * @param amount The amount of resources to be sent.
-   * @param destination The name of the target room. You don't have to gain visibility in this room.
-   * @param description The description of the transaction. It is visible to the recipient. The maximum length is 100 characters.
+   * 发送资源给指定房间的终端
+   * @param resourceType `RESOURCE_*` 常量之一。
+   * @param amount 发送资源数量。
+   * @param destination 目标房间名称。这个房间不需要对你可见。
+   * @param description 这个事务的备注。它只对收件人可见。最大长度100字符。
    */
   send(resourceType: ResourceConstant, amount: number, destination: string, description?: string): ScreepsReturnCode;
 }
@@ -555,22 +558,21 @@ interface StructureTerminalConstructor extends _Constructor<StructureTerminal>, 
 declare const StructureTerminal: StructureTerminalConstructor;
 
 /**
- * Contains up to 2,000 resource units. Can be constructed in neutral rooms. Decays for 5,000 hits per 100 ticks.
+ * 一个可以用来存储资源的小型容器。这是一个允许走上去的建筑。所有丢弃在同一方格上的资源都会被自动存储到 container 中。
  */
 interface StructureContainer extends Structure<STRUCTURE_CONTAINER> {
   readonly prototype: StructureContainer;
   /**
-   * An object with the structure contents. Each object key is one of the RESOURCE_* constants, values are resources
-   * amounts. Use _.sum(structure.store) to get the total amount of contents
+   * 一个包含了该建筑中所存储的货物的 `Store` 对象。
    */
   store: StoreDefinition;
   /**
-   * The total amount of resources the structure can contain.
-   * @deprecated An alias for .store.getCapacity().
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store.getCapacity()` 的别名。
    */
   storeCapacity: number;
   /**
-   * The amount of game ticks when this container will lose some hit points.
+   * 还有多少 tick 就要因老化而失去生命值。
    */
   ticksToDecay: number;
 }
@@ -582,45 +584,44 @@ interface StructureContainerConstructor
 declare const StructureContainer: StructureContainerConstructor;
 
 /**
- * Launches a nuke to another room dealing huge damage to the landing area.
- * Each launch has a cooldown and requires energy and ghodium resources. Launching
- * creates a Nuke object at the target room position which is visible to any player
- * until it is landed. Incoming nuke cannot be moved or cancelled. Nukes cannot
- * be launched from or to novice rooms.
+ * 向其他房间发射一枚核弹，对着落区域造成大量伤害。发射后需要时间冷却且需重新装填能量和 ghodium 资源。
+ * 发射后将会在目标房间位置创建一个对任何玩家可见的 [`Nuke`](https://screeps-cn.github.io/api/#Nuke) 对象，直至其着陆。
+ * 已发射的核弹无法移动或者取消。核弹不能从新手房间发射或者发射向新手房间。
+ * 放置到 `StructureNuker` 中的资源无法被取出 (withdraw)。
  */
 interface StructureNuker extends OwnedStructure<STRUCTURE_NUKER> {
   readonly prototype: StructureNuker;
   /**
-   * The amount of energy contained in this structure.
-   * @deprecated An alias for .store[RESOURCE_ENERGY].
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store[RESOURCE_ENERGY]` 的别名。
    */
   energy: number;
   /**
-   * The total amount of energy this structure can contain.
-   * @deprecated An alias for .store.getCapacity(RESOURCE_ENERGY).
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store.getCapacity(RESOURCE_ENERGY)` 的别名。
    */
   energyCapacity: number;
   /**
-   * The amount of energy contained in this structure.
-   * @deprecated An alias for .store[RESOURCE_GHODIUM].
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store[RESOURCE_GHODIUM]` 的别名。
    */
   ghodium: number;
   /**
-   * The total amount of energy this structure can contain.
-   * @deprecated An alias for .store.getCapacity(RESOURCE_GHODIUM).
+   * 此属性已被弃用，将很快删除。
+   * @deprecated `.store.getCapacity(RESOURCE_GHODIUM)` 的别名。
    */
   ghodiumCapacity: number;
   /**
-   * The amount of game ticks the link has to wait until the next transfer is possible.
+   * 下次发射前还需多少 tick 的冷却时间。
    */
   cooldown: number;
   /**
-   * A Store object that contains cargo of this structure.
+   * 一个包含了该建筑中所存储资源的 `Store` 对象。
    */
   store: Store<RESOURCE_ENERGY | RESOURCE_GHODIUM, false>;
   /**
-   * Launch a nuke to the specified position.
-   * @param pos The target room position.
+   * 向指定位置发射核弹。
+   * @param pos 目标房间位置
    */
   launchNuke(pos: RoomPosition): ScreepsReturnCode;
 }
@@ -630,20 +631,18 @@ interface StructureNukerConstructor extends _Constructor<StructureNuker>, _Const
 declare const StructureNuker: StructureNukerConstructor;
 
 /**
- * A non-player structure.
- * Instantly teleports your creeps to a distant room acting as a room exit tile.
- * Portals appear randomly in the central room of each sector.
+ * 一个非玩家建筑。立刻将你的 creep 传送至一个遥远房间的出口位置。传送门会在每个区块的中央房间随机刷新。
  */
 interface StructurePortal extends Structure<STRUCTURE_PORTAL> {
   readonly prototype: StructurePortal;
   /**
-   * If this is an inter-room portal, then this property contains a RoomPosition object leading to the point in the destination room.
-   * If this is an inter-shard portal, then this property contains an object with shard and room string properties.
-   * Exact coordinates are undetermined, the creep will appear at any free spot in the destination room.
+   * 如果这是个**通往其他房间**的传送门，则该属性为指向目的地房间出口位置的 `RoomPosition` 对象。
+   *
+   * 如果这是个**通往其他 shard** 的传送门，则该属性为一个包含了 `shard` 和 `room` 字符串属性的对象。无法确定其具体出口位置，creep 会被随机传送到目标房间的任意空闲位置。
    */
   destination: RoomPosition | { shard: string; room: string };
   /**
-   * The amount of game ticks when the portal disappears, or undefined when the portal is stable.
+   * 还有多少 tick 就要因老化而失去生命值，当传送门稳定时其值为 `undefined`。
    */
   ticksToDecay: number | undefined;
 }
@@ -653,27 +652,24 @@ interface StructurePortalConstructor extends _Constructor<StructurePortal>, _Con
 declare const StructurePortal: StructurePortalConstructor;
 
 /**
- * A structure which produces trade commodities from base minerals and other commodities.
+ * 使用基础矿物和其他商品(commodities)来生产贸易商品。
  */
 interface StructureFactory extends OwnedStructure<STRUCTURE_FACTORY> {
   readonly prototype: StructureFactory;
   /**
-   * The amount of game ticks the factory has to wait until the next produce is possible.
+   * 还有多少 tick 才能进行下一次生产。
    */
   cooldown: number;
   /**
-   * The level of the factory.
-   * Can be set by applying the PWR_OPERATE_FACTORY power to a newly built factory.
-   * Once set, the level cannot be changed.
+   * 工厂的等级，可以通过 `PWR_OPERATE_FACTORY` 超能来给一个新建的工厂设置等级。 一旦被设置，等级将无法再次更改。
    */
   level: number;
   /**
-   * An object with the structure contents.
+   * 一个包含了该建筑中所存储的货物的 Store 对象。
    */
   store: StoreDefinition;
   /**
-   * Produces the specified commodity.
-   * All ingredients should be available in the factory store.
+   * 生产指定商品。工厂存储中应该包含所有的生产用料。
    */
   produce(resource: CommodityConstant | MineralConstant | RESOURCE_ENERGY | RESOURCE_GHODIUM): ScreepsReturnCode;
 }
@@ -683,16 +679,18 @@ interface StructureFactoryConstructor extends _Constructor<StructureFactory>, _C
 declare const StructureFactory: StructureFactoryConstructor;
 
 /**
- * A structure which is a control center of NPC Strongholds, and also rules all invaders in the sector.
+ * 该 NPC 建筑是 NPC 要塞的控制中心，并且也统治着本区块中的所有入侵者。
+ *
+ * @see https://screeps-cn.github.io/api/#StructureInvaderCore
  */
 interface StructureInvaderCore extends OwnedStructure<STRUCTURE_INVADER_CORE> {
   readonly prototype: StructureInvaderCore;
   /**
-   * The level of the stronghold. The amount and quality of the loot depends on the level.
+   * 此要塞的等级。该等级也决定了战利品的数量和质量。
    */
   level: number;
   /**
-   * Shows the timer for a not yet deployed stronghold, undefined otherwise.
+   * 部署阶段的计时器，在要塞尚未部署完成时显示，否则为 `undefined`。
    */
   ticksToDeploy: number;
 }

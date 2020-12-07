@@ -1,33 +1,28 @@
 /**
- * A remnant of dead creeps. This is a walkable structure.
+ * 死亡creep的遗物。这个对象不阻碍行走。
  * <ul>
- *     <li>Decay: 5 ticks per body part of the deceased creep</li>
+ *     <li>消失: 死去的 creep 每个身体部件 5 tick</li>
  * </ul>
  */
 interface Tombstone extends RoomObject {
   /**
-   * A unique object identificator.
-   * You can use {@link Game.getObjectById} method to retrieve an object instance by its id.
+   * 一个唯一的对象标识。你可以使用 [`Game.getObjectById`](https://screeps-cn.github.io/api/#Game.getObjectById) 方法获取对象实例。
    */
   id: Id<this>;
   /**
-   * Time of death.
+   * 死亡时间。
    */
   deathTime: number;
   /**
-   * An object with the tombstone contents.
-   * Each object key is one of the RESOURCE_* constants, values are resources amounts.
-   * RESOURCE_ENERGY is always defined and equals to 0 when empty,
-   * other resources are undefined when empty.
-   * You can use lodash.sum to get the total amount of contents.
+   * 一个表示该结构所存储资源的 [`Store`](https://screeps-cn.github.io/api/#Store) 对象。
    */
   store: StoreDefinitionUnlimited;
   /**
-   * The amount of game ticks before this tombstone decays.
+   * 这个墓碑消失的剩余时间。
    */
   ticksToDecay: number;
   /**
-   * An object containing the deceased creep.
+   * 一个内含死亡 creep 或超能 creep 的对象。
    */
   creep: AnyCreep;
 }

@@ -38,15 +38,15 @@ interface GlobalPowerLevel {
 
 interface Shard {
   /**
-   * The name of the shard.
+   * shard 的名称。
    */
   name: string;
   /**
-   * Currently always equals to normal.
+   * 目前总是等于 normal.
    */
   type: "normal";
   /**
-   * Whether this shard belongs to the PTR.
+   * 这个 shard 是否为 [PTR](https://screeps-cn.github.io/ptr.html).
    */
   ptr: boolean;
 }
@@ -57,69 +57,64 @@ interface CPU {
    */
   limit: number;
   /**
-   * An amount of available CPU time at the current game tick. Usually it is higher than `Game.cpu.limit`.
+   * 当前游戏 tick 可用的 CPU 时间。通常它高于 `Game.cpu.limit`.
+   * @see https://screeps-cn.github.io/cpu-limit.html
    */
   tickLimit: number;
   /**
-   * An amount of unused CPU accumulated in your bucket.
-   * @see http://docs.screeps.com/cpu-limit.html#Bucket
+   * 在你的 bucket 中累积的未使用的 CPU 数量。
+   * @see https://screeps-cn.github.io/cpu-limit.html#Bucket
    */
   bucket: number;
   /**
-   * An object with limits for each shard with shard names as keys. You can use `setShardLimits` method to re-assign them.
+   * 包含了每个 shard cpu 上限的对象，以 shard 名称为关键字。你可以使用 `setShardLimits` 方法重设他们。
    */
   shardLimits: CPUShardLimits;
   /**
-   * Whether full CPU is currently unlocked for your account.
+   * 您的账户是否已经解锁了完整的 CPU。
    */
   unlocked: boolean;
   /**
-   * The time in milliseconds since UNIX epoch time until full CPU is unlocked for your account.
-   * This property is not defined when full CPU is not unlocked for your account or it's unlocked with a subscription.
+   * 您账户解锁完整 CPU 时的 UNIX 毫秒时间戳。当您账户的完整 CPU 未解锁或未使用 subscription 时该属性未定义。
    */
   unlockedTime: number | undefined;
 
   /**
-   * Get amount of CPU time used from the beginning of the current game tick. Always returns 0 in the Simulation mode.
+   * 获取当前游戏开始时使用的 CPU 时间总量。在模拟模式下始终返回 `0`。
    */
   getUsed(): number;
   /**
-   * Allocate CPU limits to different shards. Total amount of CPU should remain equal to `Game.cpu.shardLimits`.
-   * This method can be used only once per 12 hours.
+   * 分配 CPU 限制到不同的 shard。CPU 总量应保持等于 `Game.cpu.shardLimits`。此方法每 12 小时只能使用一次。
    *
-   * @param limits An object with CPU values for each shard in the same format as `Game.cpu.shardLimits`.
-   * @returns One of the following codes: `OK | ERR_BUSY | ERR_INVALID_ARGS`
+   * @param limits 表示每个 shard 的 CPU 值，与 `Game.cpu.shardLimits` 格式相同。
+   * @returns `OK | ERR_BUSY | ERR_INVALID_ARGS`
    */
   setShardLimits(limits: CPUShardLimits): OK | ERR_BUSY | ERR_INVALID_ARGS;
 
   /**
-   * Use this method to get heap statistics for your virtual machine.
+   * **这个方法只在虚拟机在你的账户运行时设置中被设为 Isolated 时可用**
    *
-   * This method will be undefined if you are not using IVM.
-   *
-   * The return value is almost identical to the Node.js function v8.getHeapStatistics().
-   * This function returns one additional property: externally_allocated_size which is the total amount of currently
-   * allocated memory which is not included in the v8 heap but counts against this isolate's memory limit.
-   * ArrayBuffer instances over a certain size are externally allocated and will be counted here.
+   * 使用此方法获取虚拟机的堆统计信息。
+   * 返回值几乎与 Node.js 函数 `v8.getHeapStatistics()` 相同。 此函数返回一个附加属性：`externally_allocated_size`，它是当前分配的内存总量，不包含在 v8 堆中，但会计入此隔离的内存限制。
+   * 超过一定大小的 `ArrayBuffer` 实例是外部分配的，将在此计算。
    */
   getHeapStatistics?(): HeapStatistics;
 
   /**
-   * This method will be undefined if you are not using IVM.
+   * **这个方法只在虚拟机在你的账户运行时设置中被设为 Isolated 时可用**
    *
-   * Reset your runtime environment and wipe all data in heap memory.
-   * Player code execution stops immediately.
+   * 重置你的运行环境并擦除堆内存中的所有数据。
    */
   halt?(): never;
   /**
-   * Generate 1 pixel resource unit for 5000 CPU from your bucket.
+   * 从您的 bucket 中取出 5000 CPU 来生成一点 pixel 资源。
    */
   generatePixel(): OK | ERR_NOT_ENOUGH_RESOURCES;
 
   /**
-   * Unlock full CPU for your account for additional 24 hours.
-   * This method will consume 1 CPU unlock bound to your account (See `Game.resources`).
-   * If full CPU is not currently unlocked for your account, it may take some time (up to 5 minutes) before unlock is applied to your account.
+   * 为您的账户解锁 24 小时的完整 CPU。
+   * 该方法将消耗一个您账户中的 CPU unlock（详见 Game.resources）。
+   * 如果之前尚未激活过完整 CPU。则可能需要一点时间（5 分钟之内）来为您的账户应用解锁。
    */
   unlock(): OK | ERR_NOT_ENOUGH_RESOURCES | ERR_FULL;
 }
@@ -293,108 +288,111 @@ interface FindTypes {
 
 interface FindPathOpts {
   /**
-   * Treat squares with creeps as walkable. Can be useful with too many moving creeps around or in some other cases. The default
-   * value is false.
+   * 将其他 creep 所处的地块视作可通行的。在附件有大量移动的 creep 或者其他一些情况时会很有用。默认值为 `false`。
    */
   ignoreCreeps?: boolean;
 
   /**
-   * Treat squares with destructible structures (constructed walls, ramparts, spawns, extensions) as walkable. Use this flag when
-   * you need to move through a territory blocked by hostile structures. If a creep with an ATTACK body part steps on such a square,
-   * it automatically attacks the structure. The default value is false.
+   * 将可破坏的建筑 (constructed walls, ramparts, spawns, extensions) 所在的地块视作可通行的。默认为 `false`。
    */
   ignoreDestructibleStructures?: boolean;
 
   /**
-   * Ignore road structures. Enabling this option can speed up the search. The default value is false. This is only used when the
-   * new PathFinder is enabled.
+   * 无视道路。启用该项将加快搜索速度。默认值为 `false`。仅当新的 [`PathFinder`](https://screeps-cn.github.io/api/#PathFinder) 启用时才可用。
    */
   ignoreRoads?: boolean;
 
   /**
-   * You can use this callback to modify a CostMatrix for any room during the search. The callback accepts two arguments, roomName
-   * and costMatrix. Use the costMatrix instance to make changes to the positions costs. If you return a new matrix from this callback,
-   * it will be used instead of the built-in cached one. This option is only used when the new PathFinder is enabled.
+   * 你可以使用该回调在搜索过程中为任意房间修改 `CostMatrix`。
    *
-   * @param roomName The name of the room.
-   * @param costMatrix The current CostMatrix
-   * @returns The new CostMatrix to use
+   * 回调接受两个参数，`roomName` 和 `costMatrix`。
+   *
+   * 使用 `costMatrix` 实例来修改地形移动成本。如果你从回调中返回了一个新的 matrix。它将会代替内置的缓存 matrix。
+   *
+   * 仅当新的 `PathFinder` 启用时才可用。
+   * @param roomName 房间名
+   * @param costMatrix 当前的地形移动成本 `CostMatrix`
+   * @returns 修改后的新的地形移动成本 `CostMatrix`
    */
   costCallback?(roomName: string, costMatrix: CostMatrix): void | CostMatrix;
 
   /**
-   * An array of the room's objects or RoomPosition objects which should be treated as walkable tiles during the search. This option
-   * cannot be used when the new PathFinder is enabled (use costCallback option instead).
+   * 一个数组，其元素为房间中的对象或者 `RoomPosition` 对象，在搜索时会将该数组中的对象位置视作可通行的地块。当启用新的 `PathFinder` 时无法使用。（请用 `costCallback` 选项代替）。
    */
   ignore?: any[] | RoomPosition[];
 
   /**
-   * An array of the room's objects or RoomPosition objects which should be treated as obstacles during the search. This option cannot
-   * be used when the new PathFinder is enabled (use costCallback option instead).
+   * 一个数组，其元素为房间中的对象或者 `RoomPosition` 对象，在搜索时会将该数组中的对象位置视作无法通行的地块。当启用新的 `PathFinder` 时无法使用。（请用 `costCallback` 选项代替）。
    */
   avoid?: any[] | RoomPosition[];
 
   /**
-   * The maximum limit of possible pathfinding operations. You can limit CPU time used for the search based on ratio 1 op ~ 0.001 CPU.
-   * The default value is 2000.
+   * 用于寻路的消耗上限。你可以限制在寻路上花费的 CPU 时间，基于 1 op ~ 0.001 CPU 的比例。默认值为 `2000`。
    */
   maxOps?: number;
 
   /**
-   * Weight to apply to the heuristic in the A* formula F = G + weight * H. Use this option only if you understand the underlying
-   * A* algorithm mechanics! The default value is 1.2.
+   * 应用于 A* 算法 `F = G + weight * H` 中的启发式权重(weight)。在使用该选项之前您最好已经了解了 A* 算法的底层实现！默认值为 `1.2`。
    */
   heuristicWeight?: number;
 
   /**
-   * If true, the result path will be serialized using Room.serializePath. The default is false.
+   * 如果为 `true`，将会使用 `Room.serializePath` 对结果路径进行序列化。默认值为 `false`。
    */
   serialize?: boolean;
 
   /**
-   * The maximum allowed rooms to search. The default (and maximum) is 16. This is only used when the new PathFinder is enabled.
+   * 寻路所允许的最大房间数。默认值为 `16`。仅当新的 [`PathFinder`](https://screeps-cn.github.io/api/#PathFinder) 启用时才可用。
    */
   maxRooms?: number;
 
   /**
-   * Path to within (range) tiles of target tile. The default is to path to the tile that the target is on (0).
+   * 找到到达位于目标指定线性区域内位置的路径。默认值为 `0`.
    */
   range?: number;
 
   /**
-   * Cost for walking on plain positions. The default is 1.
+   * 平原地形的移动成本。默认为 `1`。
    */
   plainCost?: number;
 
   /**
-   * Cost for walking on swamp positions. The default is 5.
+   * 沼泽地形的移动成本。默认为 `5`。
    */
   swampCost?: number;
 }
 
 interface MoveToOpts extends FindPathOpts {
   /**
-   * This option enables reusing the path found along multiple game ticks. It allows to save CPU time, but can result in a slightly
-   * slower creep reaction behavior. The path is stored into the creep's memory to the `_move` property. The `reusePath` value defines
-   * the amount of ticks which the path should be reused for. The default value is 5. Increase the amount to save more CPU, decrease
-   * to make the movement more consistent. Set to 0 if you want to disable path reusing.
+   * 此选项将缓存前方多个 tick 将要移动的路径。该操作可以节省 cpu 时间，但是会导致 creep 的反应变慢。
+   * 路径被缓存到 creep 内存中的 `_move` 属性里。`reusePath` 的值定义了要缓存前方多少 tick 的移动路径。默认值为 `5`。
+   * 增加该值来节省更多的 CPU。减少该值来使移动更加连贯。设置为 `0` 来禁用路径重用。
    */
   reusePath?: number;
 
   /**
-   * If `reusePath` is enabled and this option is set to true, the path will be stored in memory in the short serialized form using
-   * `Room.serializePath`. The default value is true.
+   * 如果 `reusePath` 启用并且该值设为 `true`，重用的路径将会使用 [Room.serializePath](https://screeps-cn.github.io/api/#Room.Room-serializePath) 进行序列化并储存在内存中。默认值为 `true`。
    */
   serializeMemory?: boolean;
 
   /**
-   * If this option is set to true, `moveTo` method will return `ERR_NOT_FOUND` if there is no memorized path to reuse. This can
-   * significantly save CPU time in some cases. The default value is false.
+   * 如果该选择设为 `true` 并且内存中没有重用路径时，`moveTo` 将会返回 `ERR_NOT_FOUND`。
+   * 在某些情况下，这会节省大量的 CPU 时间。默认值为 `false`。
    */
   noPathFinding?: boolean;
 
   /**
-   * Draw a line along the creep’s path using `RoomVisual.poly`. You can provide either an empty object or custom style parameters.
+   * 使用 RoomVisual.poly 来在 creep 的移动路线上画一条线。你可以提供一个空对象或者自定义样式参数。默认的样式如下：
+   *
+   * ```css
+   * {
+   *   fill: 'transparent',
+   *   stroke: '#fff',
+   *   lineStyle: 'dashed',
+   *   strokeWidth: .15,
+   *   opacity: .1
+   * }
+   * ```
    */
   visualizePathStyle?: PolyStyle;
 }

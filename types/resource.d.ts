@@ -1,20 +1,19 @@
 /**
- * A dropped piece of resource. It will decay after a while if not picked up. Dropped resource pile decays for ceil(amount/1000) units per tick.
+ * 掉落的资源。 如果没有拿起，它会在一段时间后消失。 掉落的资源以每 tick `ceil(amount/1000)` 的速度消失。
  */
-
 interface Resource<T extends ResourceConstant = ResourceConstant> extends RoomObject {
   readonly prototype: Resource;
 
   /**
-   * The amount of resource units containing.
+   * 资源数量。
    */
   amount: number;
   /**
-   * A unique object identifier. You can use `Game.getObjectById` method to retrieve an object instance by its `id`.
+   * 一个唯一的对象标识。你可以使用 [`Game.getObjectById`](https://screeps-cn.github.io/api/#Game.getObjectById) 方法获取对象实例。
    */
   id: Id<this>;
   /**
-   * One of the `RESOURCE_*` constants.
+   * `RESOURCE_*` 常量之一。
    */
   resourceType: T;
 }

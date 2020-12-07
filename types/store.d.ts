@@ -1,8 +1,25 @@
+/**
+ * 一个代表了其存储中资源的对象。
+ *
+ * 游戏中有两种类型的 store：通用型 store 和限定型 store。
+ *
+ * - 通用型 store 可以储存任意类型的资源 (例如: creep, 容器(containers), 存储(storages), 终端(terminals))。
+ *
+ * - 限定型 store 只能储存该对象所需的几种特定资源 (例如: spawn, 拓展(extension), 实验室(lab), 核弹(nuker))。
+ *
+ * 两种 `Store` 的原型都是相同的，但是其返回值取决于调用方法时传入的 resource 参数。
+ *
+ * 你可以把资源的类型当做对象属性来获取对应的资源:
+ *
+ * ```js
+ * console.log(creep.store[RESOURCE_ENERGY]);
+ * ```
+ */
 interface StoreBase<POSSIBLE_RESOURCES extends ResourceConstant, UNLIMITED_STORE extends boolean> {
   /**
-   * Returns capacity of this store for the specified resource. For a general purpose store, it returns total capacity if `resource` is undefined.
-   * @param resource The type of the resource.
-   * @returns Returns capacity number, or `null` in case of an invalid `resource` for this store type.
+   * 返回指定资源的存储容量, 对于通用型 store，当 `reource` 参数为 `undefined` 则返回总容量。
+   * @param resource 资源的类型
+   * @returns 返回存储的数量, 当 `resource` 参数不是一个有效的存储类型时返回 `null`。
    */
   getCapacity<R extends ResourceConstant | undefined = undefined>(
     resource?: R
@@ -16,9 +33,9 @@ interface StoreBase<POSSIBLE_RESOURCES extends ResourceConstant, UNLIMITED_STORE
     ? number
     : null;
   /**
-   * Returns the capacity used by the specified resource, or total used capacity for general purpose stores if `resource` is undefined.
-   * @param resource The type of the resource.
-   * @returns Returns used capacity number, or `null` in case of a not valid `resource` for this store type.
+   * 返回指定资源已使用的容量, 若为通用型存储时, `reource` 参数为 `undefined` 则返回总使用容量。
+   * @param resource 资源的类型
+   * @returns 返回已使用的容量, 当 `resource` 参数不是一个有效的存储类型时返回 `null`。
    */
   getUsedCapacity<R extends ResourceConstant | undefined = undefined>(
     resource?: R
@@ -30,9 +47,9 @@ interface StoreBase<POSSIBLE_RESOURCES extends ResourceConstant, UNLIMITED_STORE
     ? number
     : null;
   /**
-   * Returns free capacity for the store. For a limited store, it returns the capacity available for the specified resource if `resource` is defined and valid for this store.
-   * @param resource The type of the resource.
-   * @returns Returns available capacity number, or `null` in case of an invalid `resource` for this store type.
+   * 返回该存储的剩余可用容量，对于限定型 store 来说，将在 `resource` 对该存储有效时返回该资源的剩余可用容量。
+   * @param resource 资源的类型
+   * @returns 返回可用的剩余容量，如果 resource 对该 store 无效则返回 null。
    */
   getFreeCapacity<R extends ResourceConstant | undefined = undefined>(
     resource?: R
@@ -54,21 +71,21 @@ type Store<POSSIBLE_RESOURCES extends ResourceConstant, UNLIMITED_STORE extends 
 
 interface GenericStoreBase {
   /**
-   * Returns capacity of this store for the specified resource. For a general purpose store, it returns total capacity if `resource` is undefined.
-   * @param resource The type of the resource.
-   * @returns Returns capacity number, or `null` in case of an invalid `resource` for this store type.
+   * 返回指定资源的存储容量, 对于通用型 store，当 `reource` 参数为 `undefined` 则返回总容量。
+   * @param resource 资源的类型
+   * @returns 返回存储的数量, 当 `resource` 参数不是一个有效的存储类型时返回 `null`。
    */
   getCapacity(resource?: ResourceConstant): number | null;
   /**
-   * Returns the capacity used by the specified resource, or total used capacity for general purpose stores if `resource` is undefined.
-   * @param resource The type of the resource.
-   * @returns Returns used capacity number, or `null` in case of a not valid `resource` for this store type.
+   * 返回指定资源已使用的容量, 若为通用型存储时, `reource` 参数为 `undefined` 则返回总使用容量。
+   * @param resource 资源的类型
+   * @returns 返回已使用的容量, 当 `resource` 参数不是一个有效的存储类型时返回 `null`。
    */
   getUsedCapacity(resource?: ResourceConstant): number | null;
   /**
-   * Returns free capacity for the store. For a limited store, it returns the capacity available for the specified resource if `resource` is defined and valid for this store.
-   * @param resource The type of the resource.
-   * @returns Returns available capacity number, or `null` in case of an invalid `resource` for this store type.
+   * 返回该存储的剩余可用容量，对于限定型 store 来说，将在 `resource` 对该存储有效时返回该资源的剩余可用容量。
+   * @param resource 资源的类型
+   * @returns 返回可用的剩余容量，如果 resource 对该 store 无效则返回 null。
    */
   getFreeCapacity(resource?: ResourceConstant): number | null;
 }

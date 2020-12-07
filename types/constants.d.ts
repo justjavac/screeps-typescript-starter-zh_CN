@@ -1,7 +1,9 @@
 // Game Constants
 
+/** 操作已经成功纳入计划 */
 declare const OK: OK;
 declare const ERR_NOT_OWNER: ERR_NOT_OWNER;
+/** 无法找到路径。 */
 declare const ERR_NO_PATH: ERR_NO_PATH;
 declare const ERR_NAME_EXISTS: ERR_NAME_EXISTS;
 declare const ERR_BUSY: ERR_BUSY;
@@ -18,28 +20,51 @@ declare const ERR_NOT_ENOUGH_EXTENSIONS: ERR_NOT_ENOUGH_EXTENSIONS;
 declare const ERR_RCL_NOT_ENOUGH: ERR_RCL_NOT_ENOUGH;
 declare const ERR_GCL_NOT_ENOUGH: ERR_GCL_NOT_ENOUGH;
 
+/** 位于房间顶部的出口位置。 */
 declare const FIND_EXIT_TOP: FIND_EXIT_TOP;
+/** 位于房间右侧的出口位置。 */
 declare const FIND_EXIT_RIGHT: FIND_EXIT_RIGHT;
+/** 位于房间底部的出口位置。 */
 declare const FIND_EXIT_BOTTOM: FIND_EXIT_BOTTOM;
+/** 位于房间左侧的出口位置。 */
 declare const FIND_EXIT_LEFT: FIND_EXIT_LEFT;
+/** 所有出口位置。 */
 declare const FIND_EXIT: FIND_EXIT;
+/** 所有 creep。 */
 declare const FIND_CREEPS: FIND_CREEPS;
+/** 所有属于您的 creep。 */
 declare const FIND_MY_CREEPS: FIND_MY_CREEPS;
+/** 所有不属于您的 creep。 */
 declare const FIND_HOSTILE_CREEPS: FIND_HOSTILE_CREEPS;
+/** 仍有能量的 source。 */
 declare const FIND_SOURCES_ACTIVE: FIND_SOURCES_ACTIVE;
+/** 所有 source。 */
 declare const FIND_SOURCES: FIND_SOURCES;
+/** 所有掉落的资源。 */
 declare const FIND_DROPPED_RESOURCES: FIND_DROPPED_RESOURCES;
+/** 所有建筑。 */
 declare const FIND_STRUCTURES: FIND_STRUCTURES;
+/** 所有属于您的建筑，不包含中立建筑。 */
 declare const FIND_MY_STRUCTURES: FIND_MY_STRUCTURES;
+/** 所有其他玩家的建筑，不包含中立建筑。 */
 declare const FIND_HOSTILE_STRUCTURES: FIND_HOSTILE_STRUCTURES;
+/** 所有旗帜。 */
 declare const FIND_FLAGS: FIND_FLAGS;
+/** 所有建筑工地。 */
 declare const FIND_CONSTRUCTION_SITES: FIND_CONSTRUCTION_SITES;
+/** 所有属于您的 spawn。 */
 declare const FIND_MY_SPAWNS: FIND_MY_SPAWNS;
+/** 所有其他玩家的 spawn。 */
 declare const FIND_HOSTILE_SPAWNS: FIND_HOSTILE_SPAWNS;
+/** 所有属于您的建筑工地。 */
 declare const FIND_MY_CONSTRUCTION_SITES: FIND_MY_CONSTRUCTION_SITES;
+/** 所有其他玩家的建筑工地。 */
 declare const FIND_HOSTILE_CONSTRUCTION_SITES: FIND_HOSTILE_CONSTRUCTION_SITES;
+/** 所有矿床。 */
 declare const FIND_MINERALS: FIND_MINERALS;
+/** 所有将落地的核弹。 */
 declare const FIND_NUKES: FIND_NUKES;
+/** 所有墓碑。 */
 declare const FIND_TOMBSTONES: FIND_TOMBSTONES;
 declare const FIND_POWER_CREEPS: FIND_POWER_CREEPS;
 declare const FIND_MY_POWER_CREEPS: FIND_MY_POWER_CREEPS;

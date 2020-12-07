@@ -1,55 +1,54 @@
 /**
- * A global object representing the in-game market. You can use this object to track resource transactions to/from your
- * terminals, and your buy/sell orders. The object is accessible via the singleton Game.market property.
+ * 描述游戏内市场的全局变量。您可以使用该对象追踪从您的终端接收/发送的资源交易，以及您的购买/出售订单。
+ * @see https://screeps-cn.github.io/market.html
  */
 interface Market {
   /**
-   * Your current credits balance.
+   * 您当前的 credit 余额。
    */
   credits: number;
   /**
-   * An array of the last 100 incoming transactions to your terminals
+   * 一个数组，内容为您终端接收的最近 100 笔交易
    */
   incomingTransactions: Transaction[];
   /**
-   * An object with your active and inactive buy/sell orders on the market.
+   * 一个对象，包含了您在市场中活跃 (activated) 和非活跃 (deactivated) 的购买/出售订单。
    */
   orders: { [key: string]: Order };
   /**
-   * An array of the last 100 outgoing transactions from your terminals
+   * 一个数组，内容为您终端发送的最近 100 笔交易
    */
   outgoingTransactions: Transaction[];
   /**
-   * Estimate the energy transaction cost of StructureTerminal.send and Market.deal methods. The formula:
+   * 估算 `StructureTerminal.send` 和 `Game.market.deal` 方法的能量交易成本。 算法：
    *
-   * ```
+   * ```js
    * Math.ceil( amount * (Math.log(0.1*linearDistanceBetweenRooms + 0.9) + 0.1) )
    * ```
    *
-   * @param amount Amount of resources to be sent.
-   * @param roomName1 The name of the first room.
-   * @param roomName2 The name of the second room.
-   * @returns The amount of energy required to perform the transaction.
+   * @param amount 要发送的资源数量。
+   * @param roomName1 第一个房间的名称。
+   * @param roomName2 第二个房间的名称。
+   * @returns 进行交易所需的能量。
    */
   calcTransactionCost(amount: number, roomName1: string, roomName2: string): number;
   /**
-   * Cancel a previously created order. The 5% fee is not returned.
-   * @param orderId The order ID as provided in Game.market.orders
-   * @returns Result Code: OK, ERR_INVALID_ARGS
+   * 取消先前创建的订单。5% 的费用将不予退还。
+   * @param orderId `Game.market.orders` 中提供的订单 ID。
+   * @returns `OK`, `ERR_INVALID_ARGS`
    */
   cancelOrder(orderId: string): ScreepsReturnCode;
   /**
-   * Change the price of an existing order. If `newPrice` is greater than old price, you will be charged `(newPrice-oldPrice)*remainingAmount*0.05` credits.
-   * @param orderId The order ID as provided in Game.market.orders
-   * @param newPrice The new order price.
-   * @returns Result Code: OK, ERR_NOT_OWNER, ERR_NOT_ENOUGH_RESOURCES, ERR_INVALID_ARGS
+   * 修改一个已存在订单的单价。如果 `newPrice` 大于之前的单价，将向您收取 `(newPrice - oldPrice) * remainingAmount * 0.05` credit 的费用。
+   * @param orderId `Game.market.orders` 提供的订单 ID。
+   * @param newPrice 新的订单单价。
+   * @returns `OK`, `ERR_NOT_OWNER`, `ERR_NOT_ENOUGH_RESOURCES`, `ERR_INVALID_ARGS`
    */
   changeOrderPrice(orderId: string, newPrice: number): ScreepsReturnCode;
   /**
-   * Create a market order in your terminal. You will be charged `price*amount*0.05` credits when the order is placed.
+   * 从您的终端创建一个市场订单。下单时将向您收取 `price * amount * 0.05` credit 的费用。
    *
-   * The maximum orders count is 300 per player. You can create an order at any time with any amount,
-   * it will be automatically activated and deactivated depending on the resource/credits availability.
+   * 每个玩家最多可以拥有 300 个订单。您可以在任意时刻使用任意数量创建一个订单。之后会自动根据其可用资源量和 credit 来将其状态设置为活跃和非活跃。
    *
    * An order expires in 30 days after its creation, and the remaining market fee is returned.
    */
@@ -61,38 +60,35 @@ interface Market {
     roomName?: string;
   }): ScreepsReturnCode;
   /**
-   * Execute a trade deal from your Terminal to another player's Terminal using the specified buy/sell order.
+   * 使用 `yourRoomName` 房间中的终端处理一个贸易订单，根据订单类型(购入/卖出)来和其他玩家的终端进行交易。
    *
-   * Your Terminal will be charged energy units of transfer cost regardless of the order resource type.
-   * You can use Game.market.calcTransactionCost method to estimate it.
-   *
-   * When multiple players try to execute the same deal, the one with the shortest distance takes precedence.
+   * 无论订单类型如何，您的终端都将承担本次资源交易所产生的能量消耗。您可以使用 `Game.market.calcTransactionCost` 方法估算运输成本。
+   * 当多个玩家尝试处理同一个订单时，距离更近的玩家优先。您每 tick 不能处理超过 10 笔交易。
+   * @param orderId 来自 `Game.market.getAllOrders` 的订单 ID。
+   * @param amount 要转移的资源数量。
+   * @param targetRoomName 您的某个房间名称，该房间应该存在有包含足够能量的可用终端。当订单的资源类型为 `SUBSCRIPTION_TOKEN` 时无需填写该参数。
    */
   deal(orderId: string, amount: number, targetRoomName?: string): ScreepsReturnCode;
   /**
-   * Add more capacity to an existing order. It will affect `remainingAmount` and `totalAmount` properties. You will be charged `price*addAmount*0.05` credits.
-   * Extending the order doesn't update its expiration time.
-   * @param orderId The order ID as provided in Game.market.orders
-   * @param addAmount How much capacity to add. Cannot be a negative value.
-   * @returns One of the following codes: `OK`, `ERR_NOT_ENOUGH_RESOURCES`, `ERR_INVALID_ARGS`
+   * 为一个已存在的订单添加容量。它将影响 `remainingAmount` 和 `totalAmount` 属性。您将要为此支付 `price * addAmount * 0.05` credit 的手续费。
+   * @param orderId `Game.market.orders` 中提供的订单 ID。
+   * @param addAmount 要增加多少容量。不能为负数。
+   * @returns `OK`, `ERR_NOT_ENOUGH_RESOURCES`, `ERR_INVALID_ARGS`
    */
   extendOrder(orderId: string, addAmount: number): ScreepsReturnCode;
   /**
-   * Get other players' orders currently active on the market.
-   * @param filter (optional) An object or function that will filter the resulting list using the lodash.filter method.
-   * @returns An array of objects containing order information.
+   * 获取当前市场上其他玩家活跃的订单。该方法支持 `resourceType` 内置索引。
+   * @param filter (optional) 一个对象或者函数，将使用 `_.filter` 方法对结果列表进行筛选。
    */
   getAllOrders(filter?: OrderFilter | ((o: Order) => boolean)): Order[];
   /**
-   * Get daily price history of the specified resource on the market for the last 14 days.
-   * @param resource One of the RESOURCE_* constants. If undefined, returns history data for all resources. Optional
-   * @returns An array of objects with resource info.
+   * 获取最近 14 天以来市场中指定资源的每日价格记录。
+   * @param resource `RESOURCE_*` 常量之一。如果为 `undefined`，则返回所有资源的历史数据。
    */
   getHistory(resource?: MarketResourceConstant): PriceHistory[];
   /**
-   * Retrieve info for specific market order.
-   * @param orderId The order ID.
-   * @returns An object with the order info. See `getAllOrders` for properties explanation.
+   * 检索指定的市场订单。
+   * @param orderId 订单 ID。
    */
   getOrderById(id: string): Order | null;
 }
@@ -113,15 +109,23 @@ interface Transaction {
 }
 
 interface Order {
+  /** 唯一的订单 ID。 */
   id: string;
+  /** 订单创建时的游戏 tick。inter-shard 市场中的订单不存在该属性。 */
   created: number;
   active?: boolean;
+  /** `ORDER_SELL` 或 `ORDER_BUY`。 */
   type: string;
+  /** ` RESOURCE_*` 常量之一或者 `SUBSCRIPTION_TOKEN`。 */
   resourceType: MarketResourceConstant;
+  /** 下订单的房间。 */
   roomName?: string;
+  /** 当前可用的交易量。 */
   amount: number;
+  /** 该订单还可以交易多少资源。 */
   remainingAmount: number;
   totalAmount?: number;
+  /** 当前的交易单价。 */
   price: number;
 }
 

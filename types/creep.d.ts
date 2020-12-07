@@ -213,198 +213,254 @@ interface Creep extends RoomObject {
    */
   dismantle(target: Structure): CreepActionReturnCode;
   /**
-   * Drop this resource on the ground.
-   * @param resourceType One of the RESOURCE_* constants.
-   * @param amount The amount of resource units to be dropped. If omitted, all the available carried amount is used.
+   * 将资源丢弃到地上。
+   * @param resourceType `RESOURCE_*` 常量之一。
+   * @param amount 丢弃资源的数量。如果没有这个参数，丢弃全部资源。
    */
   drop(resourceType: ResourceConstant, amount?: number): OK | ERR_NOT_OWNER | ERR_BUSY | ERR_NOT_ENOUGH_RESOURCES;
   /**
-   * Add one more available safe mode activation to a room controller. The creep has to be at adjacent square to the target room controller and have 1000 ghodium resource.
-   * @param target The target room controller.
-   * @returns Result Code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_NOT_ENOUGH_RESOURCES, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE
+   * 向房间控制器添加一个新的安全模式激活次数。creep 必须与房间控制器相邻并且带有 1000 ghodium 资源。
+   * @param target 目标控制中心。
+   * @returns
+   * 如下错误码之一：
+   *
+   * 常量 | 值 | 描述
+   * :---- | :--- | :-----
+   * `OK` | `0` | 这个操作已经成功纳入计划。
+   * `ERR_NOT_OWNER` | `-1` | 你不是这个 creep 的拥有者。
+   * `ERR_BUSY` | `-4` | 这个 creep 依然在孵化中。
+   * `ERR_NOT_ENOUGH_RESOURCES` | `-6` | 这个 creep 没有足够的 ghodium。
+   * `ERR_INVALID_TARGET` | `-7` | 目标不是一个有效的控制中心对象。
+   * `ERR_NOT_IN_RANGE` | `-9` | 目标太远了。
    */
   generateSafeMode(target: StructureController): CreepActionReturnCode;
   /**
-   * Get the quantity of live body parts of the given type. Fully damaged parts do not count.
-   * @param type A body part type, one of the following body part constants: MOVE, WORK, CARRY, ATTACK, RANGED_ATTACK, HEAL, TOUGH, CLAIM
+   * 获取指定类型可用的身体部件数量。完全毁坏的部件不会被计算。
+   * @param type 一个身体部件类型，下列身体部件类型常量之一：`MOVE`, `WORK`, `CARRY`, `ATTACK`, `RANGED_ATTACK`, `HEAL`, `TOUGH`, `CLAIM`
    */
   getActiveBodyparts(type: BodyPartConstant): number;
   /**
-   * Harvest energy from the source or resource from minerals or deposits.
+   * 从 source 中采集能量或者从 mineral 或 deposit 中采集资源。
    *
-   * Needs the WORK body part.
+   * 需要 `WORK` 身体部件。
    *
-   * If the creep has an empty CARRY body part, the harvested resource is put into it; otherwise it is dropped on the ground.
+   * 如果 creep 有空余的 `CARRY` 身体，则会自动将采集到的资源转移进去；否则将会掉落在地上。
    *
-   * The target has to be at an adjacent square to the creep.
-   * @param target The source object to be harvested.
+   * 目标必须与 creep 相邻。
+   * @param target 要采集的对象。
+   * @returns
+   * 如下错误码之一：
+   *
+   * 常量 | 值 | 描述
+   * :---- | :--- | :-----
+   * `OK` | `0` | 这个操作已经成功纳入计划。
+   * `ERR_NOT_OWNER` | `-1` | 你不是该 creep 的所有者，或者其他玩家已经占领或者预定了该房间的控制器。
+   * `ERR_BUSY` | `-4` | 这个 creep 依然在孵化中。
+   * `ERR_NOT_FOUND` | `-5` | 未找到 extractor。你必须建造一个 extractor 来开采矿物。[了解更多](https://screeps-cn.github.io/minerals.html)
+   * `ERR_NOT_ENOUGH_RESOURCES` | `-6` | 目标中已经没有可采集的能量或者矿物。
+   * `ERR_INVALID_TARGET` | `-7` | 目标不是有效的 source 或者 mineral 对象。
+   * `ERR_NOT_IN_RANGE` | `-9` | 目标太远了。
+   * `ERR_TIRED` | `-11` | extractor 仍在冷却中。
+   * `ERR_NO_BODYPART` | `-12` | 这个 creep 身上没有 `WORK` 部件。
    */
   harvest(target: Source | Mineral | Deposit): CreepActionReturnCode | ERR_NOT_FOUND | ERR_NOT_ENOUGH_RESOURCES;
   /**
-   * Heal self or another creep. It will restore the target creep’s damaged body parts function and increase the hits counter.
+   * 治疗自己或者其他 creep。这将恢复目标 creep 受损身体部件的功能，并恢复已损失的生命值(hits)。
    *
-   * Needs the HEAL body part.
+   * 需要 `HEAL` 身体部件。
    *
-   * The target has to be at adjacent square to the creep.
-   * @param target The target creep object.
+   * 目标必须与 creep 相邻。
+   * @param target 目标 creep 对象。
+   * @returns
+   * 如下错误码之一：
+   *
+   * 常量 | 值 | 描述
+   * :---- | :--- | :-----
+   * `OK` | `0` | 这个操作已经成功纳入计划。
+   * `ERR_NOT_OWNER` | `-1` | 你不是这个 creep 的拥有者。
+   * `ERR_BUSY` | `-4` | 这个 creep 依然在孵化中。
+   * `ERR_INVALID_TARGET` | `-7` | 目标不是有效的 creep 对象。
+   * `ERR_NOT_IN_RANGE` | `-9` | 目标太远了。
+   * `ERR_NO_BODYPART` | `-12` | 这个 creep 身上没有 `HEAL` 部件。
    */
   heal(target: AnyCreep): CreepActionReturnCode;
   /**
-   * Move the creep one square in the specified direction or towards a creep that is pulling it.
+   * 使 creep 朝指定方向移动一个地块。
    *
-   * Requires the MOVE body part if not being pulled.
-   * @param direction The direction to move in (`TOP`, `TOP_LEFT`...)
+   * 需要 `MOVE` 身体部件，或者其他 creep 在其附近并拉动该 creep。
+   *
+   * 如果你对着一个相邻 creep 调用了 move 方法，将会使本 creep 跳过 `ERR_TIRED` 和 `ERR_NO_BODYPART` 检查; 否则将跳过 `ERR_NOT_IN_RANGE` 检查。
+   * @param direction 一个相邻的 creep 或者下列常量之一：
+   * - `TOP`
+   * - `TOP_LEFT`
+   * - `RIGHT`
+   * - `BOTTOM_RIGHT`
+   * - `BOTTOM`
+   * - `BOTTOM_LEFT`
+   * - `LEFT`
+   * - `TOP_LEFT`
+   * @returns
+   * 如下错误码之一：
+   *
+   * 常量 | 值 | 描述
+   * :---- | :--- | :-----
+   * `OK` | `0` | 这个操作已经成功纳入计划。
+   * `ERR_NOT_OWNER` | `-1` | 你不是这个 creep 的拥有者。
+   * `ERR_BUSY` | `-4` | 这个 creep 依然在孵化中。
+   * `ERR_NOT_IN_RANGE` | `-9` | 目标 creep 距离过远。
+   * `ERR_INVALID_ARGS` | `-10` | 提供的方向不正确。
+   * `ERR_TIRED` | `-11` | 该 creep 的疲劳（fatigue）计数器不为零。
+   * `ERR_NO_BODYPART` | `-12` | 该 creep 没有 `MOVE` 身体部件。
    */
   move(direction: DirectionConstant): CreepMoveReturnCode;
   move(target: Creep): OK | ERR_NOT_OWNER | ERR_BUSY | ERR_NOT_IN_RANGE | ERR_INVALID_ARGS;
   /**
-   * Move the creep using the specified predefined path. Needs the MOVE body part.
-   * @param path A path value as returned from Room.findPath or RoomPosition.findPathTo methods. Both array form and serialized string form are accepted.
+   * 使用预先定义的路径进行移动。需要 `MOVE` 身体部件。
+   * @param path 从 [`Room.findPath`](https://screeps-cn.github.io/api/#Room.findPath),
+   * [`RoomPosition.findPathTo`](https://screeps-cn.github.io/api/#RoomPosition.findPathTo)
+   * 或 [`PathFinder.search`](https://screeps-cn.github.io/api/#PathFinder.search) 方法返回的路径值，数组或序列字符串形式都可接受。
    */
   moveByPath(path: PathStep[] | RoomPosition[] | string): CreepMoveReturnCode | ERR_NOT_FOUND | ERR_INVALID_ARGS;
   /**
-   * Find the optimal path to the target within the same room and move to it.
-   * A shorthand to consequent calls of pos.findPathTo() and move() methods.
-   * If the target is in another room, then the corresponding exit will be used as a target.
+   * 在本房间内查询到目标的最佳路径并向目标移动。
+   * 该方法是 [`pos.findPathTo()`](https://screeps-cn.github.io/api/#RoomPosition.findPathTo) 与 [`move()`](https://screeps-cn.github.io/api/#Creep.move) 的调用简写。
+   * 如果目标在其他房间，则相应的出口将被当做目标(在本房间中)。
    *
-   * Needs the MOVE body part.
-   * @param x X position of the target in the room.
-   * @param y Y position of the target in the room.
-   * @param opts An object containing pathfinding options flags (see Room.findPath for more info) or one of the following: reusePath, serializeMemory, noPathFinding
+   * 需要 `MOVE` 身体部件。
+   * @param x 目标在 creep 所在房间中的 x 坐标。
+   * @param y 目标在 creep 所在房间中的 y 坐标。
+   * @param opts 可选的附加对象信息
    */
   moveTo(x: number, y: number, opts?: MoveToOpts): CreepMoveReturnCode | ERR_NO_PATH | ERR_INVALID_TARGET;
   /**
-   * Find the optimal path to the target within the same room and move to it.
-   * A shorthand to consequent calls of pos.findPathTo() and move() methods.
-   * If the target is in another room, then the corresponding exit will be used as a target.
+   * 在本房间内查询到目标的最佳路径并向目标移动。
+   * 该方法是 [`pos.findPathTo()`](https://screeps-cn.github.io/api/#RoomPosition.findPathTo) 与 [`move()`](https://screeps-cn.github.io/api/#Creep.move) 的调用简写。
+   * 如果目标在其他房间，则相应的出口将被当做目标(在本房间中)。
    *
-   * Needs the MOVE body part.
-   * @param target Can be a RoomPosition object or any object containing RoomPosition.
-   * @param opts An object containing pathfinding options flags (see Room.findPath for more info) or one of the following: reusePath, serializeMemory, noPathFinding
+   * 需要 `MOVE` 身体部件。
+   * @param target 可以是 [`RoomPosition`](https://screeps-cn.github.io/api/#RoomPosition) 对象或者任何包含 `RoomPosition` 属性的对象。该位置不必和 creep 在同一房间。
+   * @param opts 可选的附加对象信息
    */
   moveTo(
     target: RoomPosition | { pos: RoomPosition },
     opts?: MoveToOpts
   ): CreepMoveReturnCode | ERR_NO_PATH | ERR_INVALID_TARGET | ERR_NOT_FOUND;
   /**
-   * Toggle auto notification when the creep is under attack. The notification will be sent to your account email. Turned on by default.
-   * @param enabled Whether to enable notification or disable.
+   * 当 creep 受到攻击时切换自动通知。通知将发送到您的帐户邮箱。默认情况下启用。
+   * @param enabled 是否启用通知。
    */
   notifyWhenAttacked(enabled: boolean): OK | ERR_NOT_OWNER | ERR_BUSY | ERR_INVALID_ARGS;
   /**
-   * Pick up an item (a dropped piece of energy). Needs the CARRY body part. The target has to be at adjacent square to the creep or at the same square.
-   * @param target The target object to be picked up.
+   * 捡起一个物品 (如捡起一些能量)。需要 `CARRY` 身体部件。目标必须与 creep 相邻或者和 creep 在相同位置。
+   * @param target 要捡起的目标对象。
    */
   pickup(target: Resource): CreepActionReturnCode | ERR_FULL;
   /**
-   * Allow another creep to follow this creep. The fatigue generated for the target's move will be added to the creep instead of the target.
+   * 帮助其他 creep 跟随该 creep。目标 creep 移动产生的疲劳值将由该 creep 承担。
    *
-   * Requires the MOVE body part. The target must be adjacent to the creep. The creep must move elsewhere, and the target must move towards the creep.
-   * @param target The target creep to be pulled.
+   * 需要 `MOVE` 身体部件。目标必须与 creep 相邻。该 creep 必须[移动](https://screeps-cn.github.io/api/#Creep.move)到其他地方，目标 creep 也必须朝该 creep 移动。
+   * @param target 目标 creep。
    */
   pull(target: Creep): OK | ERR_NOT_OWNER | ERR_BUSY | ERR_INVALID_TARGET | ERR_NOT_IN_RANGE | ERR_NO_BODYPART;
   /**
-   * A ranged attack against another creep or structure.
+   * 远程攻击其他 creep 或者建筑。
    *
-   * Needs the RANGED_ATTACK body part. If the target is inside a rampart, the rampart is attacked instead.
+   * 需要 `RANGED_ATTACK` 身体部件。如果目标在 rampart 中，则 rampart 将被优先攻击。
    *
-   * The target has to be within 3 squares range of the creep.
-   * @param target The target object to be attacked.
+   * 目标必须位于以 creep 为中心的 7*7 正方形区域内。
+   * @param target 要攻击的目标。
    */
   rangedAttack(target: AnyCreep | Structure): CreepActionReturnCode;
   /**
-   * Heal another creep at a distance.
+   * 远程治疗其他 creep。
    *
-   * It will restore the target creep’s damaged body parts function and increase the hits counter.
+   * 这将恢复目标 creep 受损身体部件的功能，并恢复已损失的生命值(hits)。
    *
-   * Needs the HEAL body part. The target has to be within 3 squares range of the creep.
-   * @param target The target creep object.
+   * 需要 `HEAL` 身体部件。目标必须位于以 creep 为中心的 7*7 正方形区域内。
+   * @param target 目标 creep 对象。
    */
   rangedHeal(target: AnyCreep): CreepActionReturnCode;
   /**
-   * A ranged attack against all hostile creeps or structures within 3 squares range.
+   * 对以该 creep 为中心，3 格范围内的所有敌方 creep 和建筑进行攻击。
    *
-   * Needs the RANGED_ATTACK body part.
+   * 需要 `RANGED_ATTACK` 身体部件。
    *
-   * The attack power depends on the range to each target. Friendly units are not affected.
+   * 对目标造成的伤害随距离的增加而衰减。友方单位不会受到影响。
    */
   rangedMassAttack(): OK | ERR_NOT_OWNER | ERR_BUSY | ERR_NO_BODYPART;
   /**
-   * Repair a damaged structure using carried energy. Needs the WORK and CARRY body parts. The target has to be within 3 squares range of the creep.
-   * @param target The target structure to be repaired.
+   * 使用携带的能量修复受损建筑。需要 `WORK` 和 `CARRY` 身体部件。目标必须位于以 creep 为中心的 7*7 正方形区域内。
+   * @param target 要修复的目标建筑。
    */
   repair(target: Structure): CreepActionReturnCode | ERR_NOT_ENOUGH_RESOURCES;
   /**
-   * Temporarily block a neutral controller from claiming by other players.
+   * 暂时阻止其他玩家占领该房间控制器并且将 source 的能量上限恢复至正常容量。
    *
-   * Each tick, this command increases the counter of the period during which the controller is unavailable by 1 tick per each CLAIM body part.
+   * 每 tick 执行该命令都可以让控制器的不可占领时间增加，增加的 tick 等同于 `CLAIM` 身体部件的数量。
    *
-   * The maximum reservation period to maintain is 5,000 ticks.
+   * 最大的预定时间为 5,000 tick。
    *
-   * The target has to be at adjacent square to the creep....
-   * @param target The target controller object to be reserved.
-   * @return Result code: OK, ERR_NOT_OWNER, ERR_BUSY, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE, ERR_NO_BODYPART
+   * 目标必须与 creep 相邻。
+   * @param target 要预定的目标控制器对象。
    */
   reserveController(target: StructureController): CreepActionReturnCode;
   /**
-   * Display a visual speech balloon above the creep with the specified message.
+   * 在该 creep 上显示带有指定内容的可视对话气泡。此信息只会显示 1 tick。
    *
-   * The message will disappear after a few seconds. Useful for debugging purposes.
+   * 你可以通过 saying 属性获取说过的最后一条信息。
    *
-   * Only the creep's owner can see the speech message unless toPublic is true.
-   * @param message The message to be displayed. Maximum length is 10 characters.
-   * @param set to 'true' to allow other players to see this message. Default is 'false'.
+   * 允许使用任何有效的 Unicode 字符。包括 emoji。
+   * @param message 要显示的信息，最长 10 字符。
+   * @param toPublic 设置为 `true` 来让其他玩家也能看到该信息。默认为 `false`。
    */
   say(message: string, toPublic?: boolean): OK | ERR_NOT_OWNER | ERR_BUSY;
   /**
-   * Sign a controller with a random text visible to all players. This text will appear in the room UI, in the world map, and can be accessed via the API.
-   * You can sign unowned and hostile controllers. The target has to be at adjacent square to the creep. Pass an empty string to remove the sign.
-   * @param target The target controller object to be signed.
-   * @param text The sign text. The maximum text length is 100 characters.
-   * @returns Result Code: OK, ERR_BUSY, ERR_INVALID_TARGET, ERR_NOT_IN_RANGE
+   * 用对所有玩家可见的任意文本对控制器进行签名。该文本将显示在世界地图的房间 UI 中。并可通过 api 进行访问。你可以签名无主甚至敌对玩家的控制器。目标必须与 creep 相邻。传递一个空字符串来移除签名。
+   * @param target 要签名的目标控制器对象。
+   * @param text 签名文本，最多 100 字符，之后的内容将被截断。
    */
   signController(target: StructureController, text: string): OK | ERR_BUSY | ERR_INVALID_TARGET | ERR_NOT_IN_RANGE;
   /**
-   * Kill the creep immediately.
+   * 立刻杀死该 creep。
    */
   suicide(): OK | ERR_NOT_OWNER | ERR_BUSY;
   /**
-   * Transfer resource from the creep to another object. The target has to be at adjacent square to the creep.
-   * @param target The target object.
-   * @param resourceType One of the RESOURCE_* constants
-   * @param amount The amount of resources to be transferred. If omitted, all the available carried amount is used.
+   * 将资源从该 creep 转移至其他对象。目标必须与 creep 相邻。
+   * @param target 目标对象。
+   * @param resourceType `RESOURCE_*` 常量之一。
+   * @param amount 要转移的资源数量。如果省略，将转移携带的全部指定资源。
    */
   transfer(target: AnyCreep | Structure, resourceType: ResourceConstant, amount?: number): ScreepsReturnCode;
   /**
-   * Upgrade your controller to the next level using carried energy.
+   * 使用携带的能量将您的控制器升级到新的等级。升级控制器将同时提高你的全局控制等级(Global Control Level)。
    *
-   * Upgrading controllers raises your Global Control Level in parallel.
+   * 需要 `WORK` 和 `CARRY` 身体部件。目标必须位于以 creep 为中心的 7*7 正方形区域内。
    *
-   * Needs WORK and CARRY body parts.
+   * 一个完全升级的 8 级控制器每 tick 最多接受 15 能量的升级，无论 creep 的能力有没有超过。
+   * 该值限制了当前 tick 所有 creep 执行 `upgradeController` 积累的总能量值。
+   * 可以使用 [ghodium 化合物强化](https://screeps-cn.github.io/resources.html) 来提高此上限。
    *
-   * The target has to be at adjacent square to the creep.
-   *
-   * A fully upgraded level 8 controller can't be upgraded with the power over 15 energy units per tick regardless of creeps power.
-   *
-   * The cumulative effect of all the creeps performing upgradeController in the current tick is taken into account.
-   * @param target The target controller object to be upgraded.
+   * 升级控制器会把它的 `ticksToDowngrade` 计时器提高 100 tick。该计时器必须填满才能提升控制器等级。
+   * @param target 要进行升级的目标控制器。
    */
   upgradeController(target: StructureController): ScreepsReturnCode;
   /**
-   * Withdraw resources from a structure, a tombstone or a ruin.
+   * 从建筑(structure)或是墓碑(tombstone)中拿取资源。
    *
-   * The target has to be at adjacent square to the creep.
+   * 目标必须与 creep 相邻。
    *
-   * Multiple creeps can withdraw from the same structure in the same tick.
+   * 多个 creep 可以在同一 tick 里从相同对象中拿取资源。
    *
-   * Your creeps can withdraw resources from hostile structures as well, in case if there is no hostile rampart on top of it.
-   * @param target The target object.
-   * @param resourceType The target One of the RESOURCE_* constants..
-   * @param amount The amount of resources to be transferred. If omitted, all the available amount is used.
+   * 你的 creep 同样也可以从敌对建筑/墓碑中拿取资源，如果它上面没有敌对的 rampart 的话。
+   *
+   * 此方法不应该被用来在 creep 之间转移资源。想要在 creep 之间转移，请对携带资源的 creep 执行 [`transfer`](https://screeps-cn.github.io/api/#Creep.transfer) 方法。
+   * @param target 目标对象。
+   * @param resourceType `RESOURCE_*` 常量之一。
+   * @param amount 被传递资源的数量。如果没有这个参数，传递全部可用数量的资源。
    */
   withdraw(target: Structure | Tombstone | Ruin, resourceType: ResourceConstant, amount?: number): ScreepsReturnCode;
 }
 
-interface CreepConstructor extends _Constructor<Creep>, _ConstructorById<Creep> {}
+interface CreepConstructor extends _Constructor<Creep>, _ConstructorById<Creep> { }
 
 declare const Creep: CreepConstructor;

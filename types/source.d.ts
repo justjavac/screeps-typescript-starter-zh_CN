@@ -1,5 +1,5 @@
 /**
- * An energy source object. Can be harvested by creeps with a WORK body part.
+ * 一个能量源对象。可以被拥有 `WORK` 身体部件的 creep 采集。
  */
 interface Source extends RoomObject {
   /**
@@ -7,24 +7,24 @@ interface Source extends RoomObject {
    */
   readonly prototype: Source;
   /**
-   * The remaining amount of energy.
+   * 能量的剩余容量。
    */
   energy: number;
   /**
-   * The total amount of energy in the source. Equals to 3000 in most cases.
+   * 该 source 的总能量容量。
    */
   energyCapacity: number;
   /**
-   * A unique object identifier. You can use Game.getObjectById method to retrieve an object instance by its id.
+   * 一个唯一的对象标识。你可以使用 [`Game.getObjectById`](https://screeps-cn.github.io/api/#Game.getObjectById) 方法获取对象实例。
    */
   id: Id<this>;
   /**
-   * If you can get an instance of Source, you can see it.
-   * If you can see a Source, you can see the room it's in.
+   * 如果你可以获得一个 Source 的实例，那么你就可以看到这个实例。
+   * 如果你能看到某个 Source，那么你就可以看到它所在的 room。
    */
   room: Room;
   /**
-   * The remaining time after which the source will be refilled.
+   * 该 source 还有多少 tick 将会再生。
    */
   ticksToRegeneration: number;
 }

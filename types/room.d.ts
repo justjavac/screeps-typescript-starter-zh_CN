@@ -1,31 +1,32 @@
 /**
- * An object representing the room in which your units and structures are in.
+ * 一个代表了你的单位和建筑所在房间的对象。
  *
- * It can be used to look around, find paths, etc.
+ * 它可以被用来“环顾四周”，查找路径等。
  *
- * Every object in the room contains its linked Room instance in the room property.
+ * 所有 `RoomObject` 都有一个链接到其所在房间 `Room` 实例的属性 `room`。
  */
 interface Room {
   readonly prototype: Room;
 
   /**
-   * The Controller structure of this room, if present, otherwise undefined.
+   * 该房间中的控制器（Controller）建筑，如果其不存在则返回 `undefined`。
    */
   controller?: StructureController;
   /**
-   * Total amount of energy available in all spawns and extensions in the room.
+   * 本房间中所有 spawn 和 extension 中的可用能量总额。
    */
   energyAvailable: number;
   /**
-   * Total amount of energyCapacity of all spawns and extensions in the room.
+   * 本房间中所有 spawn 和 extension 的容量上限 `energyCapacity` 总额。
    */
   energyCapacityAvailable: number;
   /**
-   * Returns an array of events happened on the previous tick in this room.
+   * 返回该房间中前一个 tick 发生的事件数组。
+   * @param raw 如果该参数为 false 或者未定义，则本方法将会返回使用 `JSON.parse` 解析后的对象，在首次访问时可能会造成一些 CPU 消耗（返回值会被缓存以方便后续调用）。如果 raw 为 `true`。则原始的 JSON 字符串将会被返回。
    */
   getEventLog(raw?: boolean): EventItem[];
   /**
-   * A shorthand to `Memory.rooms[room.name]`. You can use it for quick access the room’s specific memory data object.
+   * `Memory.rooms[room.name]` 的简写。你可以用它来快速访问到该房间特定的内存数据对象。[点此了解有关内存的更多信息](https://screeps-cn.github.io/global-objects.html#Memory-object)。
    */
   memory: RoomMemory;
   /**
@@ -33,50 +34,50 @@ interface Room {
    */
   mode: string;
   /**
-   * The name of the room.
+   * 房间名称。
    */
   readonly name: string;
   /**
-   * The Storage structure of this room, if present, otherwise undefined.
+   * 该房间中的 `Storage` 建筑，如果其不存在则返回 `undefined`。
    */
   storage?: StructureStorage;
   /**
-   * The Terminal structure of this room, if present, otherwise undefined.
+   * 该房间中的 `Terminal` 建筑，如果其不存在则返回 `undefined`。
    */
   terminal?: StructureTerminal;
   /**
-   * A RoomVisual object for this room. You can use this object to draw simple shapes (lines, circles, text labels) in the room.
+   * 该房间的 `RoomVisual` 对象。您可以使用该对象在房间中绘制简单的形状 (线条，圆，文本标签)。
    */
   visual: RoomVisual;
   /**
-   * Create new ConstructionSite at the specified location.
-   * @param x The X position.
-   * @param y The Y position.
-   * @param structureType One of the following constants: STRUCTURE_EXTENSION, STRUCTURE_RAMPART, STRUCTURE_ROAD, STRUCTURE_SPAWN, STRUCTURE_WALL, STRUCTURE_LINK
+   * 在指定位置创建一个新的 `ConstructionSite`。
+   * @param x X 坐标。
+   * @param y Y 坐标。
+   * @param structureType `STRUCTURE_*` 常量之一: STRUCTURE_EXTENSION, STRUCTURE_RAMPART, STRUCTURE_ROAD, STRUCTURE_SPAWN, STRUCTURE_WALL, STRUCTURE_LINK
    * @returns Result Code: OK, ERR_INVALID_TARGET, ERR_INVALID_ARGS, ERR_RCL_NOT_ENOUGH
    */
   createConstructionSite(x: number, y: number, structureType: BuildableStructureConstant): ScreepsReturnCode;
   /**
-   * Create new ConstructionSite at the specified location.
-   * @param pos Can be a RoomPosition object or any object containing RoomPosition.
-   * @param structureType One of the following constants: STRUCTURE_EXTENSION, STRUCTURE_RAMPART, STRUCTURE_ROAD, STRUCTURE_SPAWN, STRUCTURE_WALL, STRUCTURE_LINK
+   * 在指定位置创建一个新的 `ConstructionSite`。
+   * @param pos 可以为 [`RoomPosition`](https://screeps-cn.github.io/api/#RoomPosition) 对象或任何包含 `RoomPosition` 的对象。
+   * @param structureType `STRUCTURE_*` 常量之一: STRUCTURE_EXTENSION, STRUCTURE_RAMPART, STRUCTURE_ROAD, STRUCTURE_SPAWN, STRUCTURE_WALL, STRUCTURE_LINK
    * @returns Result Code: OK, ERR_INVALID_TARGET, ERR_INVALID_ARGS, ERR_RCL_NOT_ENOUGH
    */
   createConstructionSite(pos: RoomPosition | _HasRoomPosition, structureType: StructureConstant): ScreepsReturnCode;
   /**
-   * Create new ConstructionSite at the specified location.
-   * @param x The X position.
-   * @param y The Y position.
-   * @param structureType One of the following constants: STRUCTURE_EXTENSION, STRUCTURE_RAMPART, STRUCTURE_ROAD, STRUCTURE_SPAWN, STRUCTURE_WALL, STRUCTURE_LINK
-   * @param name The name of the structure, for structures that support it (currently only spawns).
+   * 在指定位置创建一个新的 `ConstructionSite`。
+   * @param x X 坐标。
+   * @param y Y 坐标。
+   * @param structureType `STRUCTURE_*` 常量之一: STRUCTURE_EXTENSION, STRUCTURE_RAMPART, STRUCTURE_ROAD, STRUCTURE_SPAWN, STRUCTURE_WALL, STRUCTURE_LINK
+   * @param name 建筑的名称，该建筑必须支持设置名字（当前仅有 spawn）。
    * @returns Result Code: OK, ERR_INVALID_TARGET, ERR_INVALID_ARGS, ERR_RCL_NOT_ENOUGH
    */
   createConstructionSite(x: number, y: number, structureType: STRUCTURE_SPAWN, name?: string): ScreepsReturnCode;
   /**
-   * Create new ConstructionSite at the specified location.
-   * @param pos Can be a RoomPosition object or any object containing RoomPosition.
-   * @param structureType One of the following constants: STRUCTURE_EXTENSION, STRUCTURE_RAMPART, STRUCTURE_ROAD, STRUCTURE_SPAWN, STRUCTURE_WALL, STRUCTURE_LINK
-   * @param name The name of the structure, for structures that support it (currently only spawns).
+   * 在指定位置创建一个新的 `ConstructionSite`。
+   * @param pos 可以为 [`RoomPosition`](https://screeps-cn.github.io/api/#RoomPosition) 对象或任何包含 `RoomPosition` 的对象。
+   * @param structureType `STRUCTURE_*` 常量之一: STRUCTURE_EXTENSION, STRUCTURE_RAMPART, STRUCTURE_ROAD, STRUCTURE_SPAWN, STRUCTURE_WALL, STRUCTURE_LINK
+   * @param name 建筑的名称，该建筑必须支持设置名字（当前仅有 spawn）。
    * @returns Result Code: OK, ERR_INVALID_TARGET, ERR_INVALID_ARGS, ERR_RCL_NOT_ENOUGH
    */
   createConstructionSite(
@@ -85,19 +86,19 @@ interface Room {
     name?: string
   ): ScreepsReturnCode;
   /**
-   * Create new Flag at the specified location.
-   * @param x The X position.
-   * @param y The Y position.
-   * @param name (optional) The name of a new flag.
+   * 在指定位置创建一个新的 [Flag](https://screeps-cn.github.io/api/#Flag)。
+   * @param x X 坐标。
+   * @param y Y 坐标。
+   * @param name (可选) 新旗帜的名称。
    *
-   * It should be unique, i.e. the Game.flags object should not contain another flag with the same name (hash key).
+   * 它应该是唯一的，即 `Game.flags` 不应该包含拥有相同名称(哈希键)的不同旗帜。
    *
-   * If not defined, a random name will be generated.
+   * 如果未定义，则会生成随机名称。
    *
-   * The maximum length is 60 characters.
-   * @param color The color of a new flag. Should be one of the COLOR_* constants. The default value is COLOR_WHITE.
-   * @param secondaryColor The secondary color of a new flag. Should be one of the COLOR_* constants. The default value is equal to color.
-   * @returns The name of a new flag, or one of the following error codes: ERR_NAME_EXISTS, ERR_INVALID_ARGS
+   * 最长不得超过 60 字符。
+   * @param color (可选) 新旗帜的颜色。应为 `COLOR_*` 常量之一。默认值为 `COLOR_WHITE`。
+   * @param secondaryColor (可选) 新旗帜的次要颜色。应为 `COLOR_*` 常量之一。默认值等于 color 属性值。
+   * @returns 新旗帜的名称，或者下列错误码之一: `ERR_NAME_EXISTS`, `ERR_INVALID_ARGS`
    */
   createFlag(
     x: number,
@@ -107,18 +108,18 @@ interface Room {
     secondaryColor?: ColorConstant
   ): ERR_NAME_EXISTS | ERR_INVALID_ARGS | string;
   /**
-   * Create new Flag at the specified location.
-   * @param pos Can be a RoomPosition object or any object containing RoomPosition.
-   * @param name (optional) The name of a new flag.
+   * 在指定位置创建一个新的 [Flag](https://screeps-cn.github.io/api/#Flag)。
+   * @param pos 可以为 [`RoomPosition`](https://screeps-cn.github.io/api/#RoomPosition) 对象或任何包含 `RoomPosition` 的对象。
+   * @param name (可选) 新旗帜的名称。
    *
-   * It should be unique, i.e. the Game.flags object should not contain another flag with the same name (hash key).
+   * 它应该是唯一的，即 `Game.flags` 不应该包含拥有相同名称(哈希键)的不同旗帜。
    *
-   * If not defined, a random name will be generated.
+   * 如果未定义，则会生成随机名称。
    *
-   * The maximum length is 60 characters.
-   * @param color The color of a new flag. Should be one of the COLOR_* constants. The default value is COLOR_WHITE.
-   * @param secondaryColor The secondary color of a new flag. Should be one of the COLOR_* constants. The default value is equal to color.
-   * @returns The name of a new flag, or one of the following error codes: ERR_NAME_EXISTS, ERR_INVALID_ARGS
+   * 最长不得超过 60 字符。
+   * @param color (可选) 新旗帜的颜色。应为 `COLOR_*` 常量之一。默认值为 `COLOR_WHITE`。
+   * @param secondaryColor (可选) 新旗帜的次要颜色。应为 `COLOR_*` 常量之一。默认值等于 color 属性值。
+   * @returns 新旗帜的名称，或者下列错误码之一: `ERR_NAME_EXISTS`, `ERR_INVALID_ARGS`
    */
   createFlag(
     pos: RoomPosition | { pos: RoomPosition },
@@ -127,28 +128,10 @@ interface Room {
     secondaryColor?: ColorConstant
   ): ERR_NAME_EXISTS | ERR_INVALID_ARGS | string;
   /**
-   * Find all objects of the specified type in the room.
-   * @param type One of the following constants:
-   *  * FIND_CREEPS
-   *  * FIND_MY_CREEPS
-   *  * FIND_HOSTILE_CREEPS
-   *  * FIND_MY_SPAWNS
-   *  * FIND_HOSTILE_SPAWNS
-   *  * FIND_SOURCES
-   *  * FIND_SOURCES_ACTIVE
-   *  * FIND_DROPPED_RESOURCES
-   *  * FIND_STRUCTURES
-   *  * FIND_MY_STRUCTURES
-   *  * FIND_HOSTILE_STRUCTURES
-   *  * FIND_FLAGS
-   *  * FIND_CONSTRUCTION_SITES
-   *  * FIND_EXIT_TOP
-   *  * FIND_EXIT_RIGHT
-   *  * FIND_EXIT_BOTTOM
-   *  * FIND_EXIT_LEFT
-   *  * FIND_EXIT
-   * @param opts An object with additional options
-   * @returns An array with the objects found.
+   * 查找房间中指定类型的所有对象。在应用自定义的 `filter` 之前，搜索结果会被自动缓存到指定的房间和类型，自动缓存将持续到本 tick 结束。
+   * @param type `FIND_*` 常量之一
+   * @param opts 可选项对象，用户刷选。
+   * @returns 找到的对象数组
    */
   find<K extends FindConstant>(type: K, opts?: FilterOptions<K>): FindTypes[K][];
   find<T extends Structure>(
@@ -156,89 +139,116 @@ interface Room {
     opts?: FilterOptions<FIND_STRUCTURES>
   ): T[];
   /**
-   * Find the exit direction en route to another room.
-   * @param room Another room name or room object.
-   * @returns The room direction constant, one of the following: FIND_EXIT_TOP, FIND_EXIT_RIGHT, FIND_EXIT_BOTTOM, FIND_EXIT_LEFT
-   * Or one of the following error codes: ERR_NO_PATH, ERR_INVALID_ARGS
+   * 找到通往另一个房间的出口方向。请注意，房间之间的移动不需要此方法，您只需将另一个房间中的目标传递给 `Creep.moveTo` 方法即可。
+   * @param room 其他房间的名称或者房间对象。
+   * @returns 出口方向常量: `FIND_EXIT_TOP`, `FIND_EXIT_RIGHT`, `FIND_EXIT_BOTTOM`, `FIND_EXIT_LEFT`
+   * 或者下列错误码之一: `ERR_NO_PATH`, `ERR_INVALID_ARGS`
    */
   findExitTo(room: string | Room): ExitConstant | ERR_NO_PATH | ERR_INVALID_ARGS;
   /**
-   * Find an optimal path inside the room between fromPos and toPos using A* search algorithm.
-   * @param fromPos The start position.
-   * @param toPos The end position.
-   * @param opts (optional) An object containing additonal pathfinding flags
-   * @returns An array with path steps
+   * 使用优化的 A* 搜索算法 [Jump Point Search](http://en.wikipedia.org/wiki/Jump_point_search) 在 `fromPos` 和 `toPos` 之间找到房间内的最佳路径。
+   * @param fromPos 起始位置。
+   * @param toPos 结束位置。
+   * @param opts (可选) 包含寻路可选项的对象
+   * @returns 一个数组，其元素为如下形式的路径步骤：
+   *
+   * ```json
+   * [
+   *   { x: 10, y: 5, dx: 1,  dy: 0, direction: RIGHT },
+   *   { x: 10, y: 6, dx: 0,  dy: 1, direction: BOTTOM },
+   *   { x: 9,  y: 7, dx: -1, dy: 1, direction: BOTTOM_LEFT },
+   *   ...
+   * ]
+   * ```
    */
   findPath(fromPos: RoomPosition, toPos: RoomPosition, opts?: FindPathOpts): PathStep[];
   /**
-   * Creates a RoomPosition object at the specified location.
-   * @param x The X position.
-   * @param y The Y position.
-   * @returns A RoomPosition object or null if it cannot be obtained.
+   * 获取指定位置的 `RoomPosition` 对象。
+   * @param x X 坐标。
+   * @param y Y 坐标。
+   * @returns 一个 RoomPosition 对象，如果无法获取则返回 null。
    */
   getPositionAt(x: number, y: number): RoomPosition | null;
   /**
-   * Get a Room.Terrain object which provides fast access to static terrain data.
-   * This method works for any room in the world even if you have no access to it.
+   * 获取一个 [`Room.Terrain`](https://screeps-cn.github.io/api/#Room-Terrain) 对象，可以用它来快速访问房间内的静态地形数据。
+   * 即使没有指定房间的视野，您依旧可以使用该方法访问它的地形数据，该方法适用于游戏世界中的所有房间。
    */
   getTerrain(): RoomTerrain;
   /**
-   * Get the list of objects at the specified room position.
-   * @param x The X position.
-   * @param y The Y position.
-   * @returns An array with objects at the specified position
+   * 获取指定房间位置的对象数组。
+   * @param x 该房间中的 X 坐标。
+   * @param y 该房间中的 Y 坐标。
+   * @returns 一个位于指定位置的对象数组，格式如下：
+   *
+   * ```json
+   * [
+   *   { type: 'creep', creep: {...} },
+   *   { type: 'structure', structure: {...} },
+   *   ..
+   *   { type: 'terrain', terrain: 'swamp' }
+   * ]
+   * ```
    */
   lookAt(x: number, y: number): LookAtResult[];
   /**
-   * Get the list of objects at the specified room position.
-   * @param target Can be a RoomPosition object or any object containing RoomPosition.
-   * @returns An array with objects at the specified position
+   * 获取指定房间位置的对象数组。
+   * @param target 可以是 `RoomPosition` 对象或者任何包含 RoomPosition 属性的对象。
+   * @returns 一个位于指定位置的对象数组，格式如下：
+   *
+   * ```json
+   * [
+   *   { type: 'creep', creep: {...} },
+   *   { type: 'structure', structure: {...} },
+   *   ..
+   *   { type: 'terrain', terrain: 'swamp' }
+   * ]
+   * ```
    */
   lookAt(target: RoomPosition | { pos: RoomPosition }): LookAtResult[];
   /**
-   * Get the list of objects at the specified room area. This method is more CPU efficient in comparison to multiple lookAt calls.
-   * @param top The top Y boundary of the area.
-   * @param left The left X boundary of the area.
-   * @param bottom The bottom Y boundary of the area.
-   * @param right The right X boundary of the area.
-   * @param asArray Set to true if you want to get the result as a plain array.
-   * @returns An object with all the objects in the specified area
+   * 获取指定房间区域内的对象列表。
+   * @param top 区域顶部边界的 Y 坐标。
+   * @param left 区域左侧边界的 X 坐标。
+   * @param bottom 区域底部边界的 Y 坐标。
+   * @param right 区域右侧边界的 X 坐标。
+   * @param asArray 设为 `true` 来获得纯数组形式。
+   * @returns `asArray` 值为 `false` 或者未定义，则该方法以如下格式返回指定区域内的对象。
    */
   lookAtArea(top: number, left: number, bottom: number, right: number, asArray?: false): LookAtResultMatrix;
   /**
-   * Get the list of objects at the specified room area. This method is more CPU efficient in comparison to multiple lookAt calls.
-   * @param top The top Y boundary of the area.
-   * @param left The left X boundary of the area.
-   * @param bottom The bottom Y boundary of the area.
-   * @param right The right X boundary of the area.
-   * @param asArray Set to true if you want to get the result as a plain array.
-   * @returns An object with all the objects in the specified area
+   * 获取指定房间区域内的对象列表。
+   * @param top 区域顶部边界的 Y 坐标。
+   * @param left 区域左侧边界的 X 坐标。
+   * @param bottom 区域底部边界的 Y 坐标。
+   * @param right 区域右侧边界的 X 坐标。
+   * @param asArray 设为 `true` 来获得纯数组形式。
+   * @returns 如果 `asArray` 值为 `true`，则该方法以如下格式返回指定区域内的对象数组：
    */
   lookAtArea(top: number, left: number, bottom: number, right: number, asArray: true): LookAtResultWithPos[];
   /**
-   * Get the objects at the given position.
-   * @param type One of the LOOK_* constants.
-   * @param x The X position.
-   * @param y The Y position.
-   * @returns An array of Creep at the given position.
+   * 在指定位置查找指定类型的对象。
+   * @param type `LOOK_*` 常量之一。
+   * @param x 该房间中的 X 坐标。
+   * @param y 该房间中的 Y 坐标。
+   * @returns 在指定位置找到的指定类型的对象数组。
    */
   lookForAt<T extends keyof AllLookAtTypes>(type: T, x: number, y: number): AllLookAtTypes[T][];
   /**
-   * Get the objects at the given RoomPosition.
-   * @param type One of the LOOK_* constants.
-   * @param target Can be a RoomPosition object or any object containing RoomPosition.
-   * @returns An array of Creeps at the specified position if found.
+   * 在指定位置查找指定类型的对象。
+   * @param type `LOOK_*` 常量之一。
+   * @param target 可以是 `RoomPosition` 对象或者任何包含 `RoomPosition` 属性的对象。
+   * @returns 在指定位置找到的指定类型的对象数组。
    */
   lookForAt<T extends keyof AllLookAtTypes>(type: T, target: RoomPosition | _HasRoomPosition): AllLookAtTypes[T][];
   /**
-   * Get the given objets in the supplied area.
-   * @param type One of the LOOK_* constants
-   * @param top The top (Y) boundry of the area.
-   * @param left The left (X) boundry of the area.
-   * @param bottom The bottom (Y) boundry of the area.
-   * @param right The right(X) boundry of the area.
-   * @param asArray Flatten the results into an array?
-   * @returns An object with the sstructure object[X coord][y coord] as an array of found objects.
+   * 在指定房间区域查找指定类型的对象列表。
+   * @param type `LOOK_*` 常量之一。
+   * @param top 区域顶部边界的 Y 坐标。
+   * @param left 区域左侧边界的 X 坐标。
+   * @param bottom 区域底部边界的 Y 坐标。
+   * @param right 区域右侧边界的 X 坐标。
+   * @param asArray 设为 `true` 来获得纯数组形式。
+   * @returns 如果 `asArray` 值为 `false` 或者未定义，则该方法以如下格式返回指定区域内的对象
    */
   lookForAtArea<T extends keyof AllLookAtTypes>(
     type: T,
@@ -249,14 +259,14 @@ interface Room {
     asArray?: false
   ): LookForAtAreaResultMatrix<AllLookAtTypes[T], T>;
   /**
-   * Get the given objets in the supplied area.
-   * @param type One of the LOOK_* constants
-   * @param top The top (Y) boundry of the area.
-   * @param left The left (X) boundry of the area.
-   * @param bottom The bottom (Y) boundry of the area.
-   * @param right The right(X) boundry of the area.
-   * @param asArray Flatten the results into an array?
-   * @returns An array of found objects with an x & y property for their position
+   * 在指定房间区域查找指定类型的对象列表。
+   * @param type `LOOK_*` 常量之一。
+   * @param top 区域顶部边界的 Y 坐标。
+   * @param left 区域左侧边界的 X 坐标。
+   * @param bottom 区域底部边界的 Y 坐标。
+   * @param right 区域右侧边界的 X 坐标。
+   * @param asArray 设为 `true` 来获得纯数组形式。
+   * @returns 如果 `asArray` 值为 `true`，则该方法以如下格式返回指定区域内的对象数组
    */
   lookForAtArea<T extends keyof AllLookAtTypes>(
     type: T,
@@ -286,15 +296,15 @@ interface RoomConstructor extends _Constructor<Room> {
   Terrain: RoomTerrainConstructor;
 
   /**
-   * Serialize a path array into a short string representation, which is suitable to store in memory.
-   * @param path A path array retrieved from `Room.findPath`.
-   * @returns A serialized string form of the given path.
+   * 将路径数组序列化为适合存储在内存中的短字符串形式。
+   * @param path [`Room.findPath`](https://screeps-cn.github.io/api/#Room.findPath) 返回的路径数组。
+   * @returns 参数路径的序列化字符串。
    */
   serializePath(path: PathStep[]): string;
   /**
-   * Deserialize a short string path representation into an array form.
-   * @param path A serialized path string.
-   * @returns A path array.
+   * 将短字符串形式的路径反序列化为路径数组。
+   * @param path 序列化的路径字符串。
+   * @returns 路径数组
    */
   deserializePath(path: string): PathStep[];
 }

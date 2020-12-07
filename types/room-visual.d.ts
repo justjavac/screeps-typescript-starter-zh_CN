@@ -143,30 +143,30 @@ interface LineStyle {
 
 interface PolyStyle {
   /**
-   * Fill color in any web format, default is #ffffff(white).
+   * 填充颜色，允许使用任何 web 格式颜色，默认值为 `#ffffff` (白色)。
    */
   fill?: string;
   /**
-   * Opacity value, default is 0.5.
+   * 透明度，默认值为 `0.5`。
    */
   opacity?: number;
   /**
-   * Stroke color in any web format, default is undefined (no stroke).
+   * 轮廓颜色，允许使用任何 web 格式颜色，默认 `undefined`（没有轮廓）。
    */
   stroke?: string | undefined;
   /**
-   * Stroke line width, default is 0.1.
+   * 轮廓宽度，默认值为 `0.1`。
    */
   strokeWidth?: number;
   /**
-   * Either undefined (solid line), dashed, or dotted.Default is undefined.
+   * `undefined`(实线)，`solid`(实线)，`dashed` (虚线) 或者 `dotted` (点线) 之一。默认值为 `undefined`。
    */
   lineStyle?: "dashed" | "dotted" | "solid";
 }
 
 interface CircleStyle extends PolyStyle {
   /**
-   * Circle radius, default is 0.15.
+   * 圆的半径，默认值为 `0.15`。
    */
   radius?: number;
 }
