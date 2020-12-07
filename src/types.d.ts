@@ -1,7 +1,6 @@
-// example declaration file - remove these and add your own custom typings
-
 // memory extension samples
 interface CreepMemory {
+  /** creep 的角色 */
   role?: string;
   room?: string;
   /** 是否正在建造 */
