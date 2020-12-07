@@ -1,25 +1,26 @@
 export const roleBuilder = {
   run(creep: Creep): void {
-    if (creep.memory.building && creep.carry.energy === 0) {
+    if (creep.memory.building && creep.store[RESOURCE_ENERGY] === 0) {
       creep.memory.building = false;
-      creep.say("harvesting");
+      creep.say("🔄 采集");
     }
-    if (!creep.memory.building && creep.carry.energy === creep.carryCapacity) {
+
+    if (!creep.memory.building && creep.store.getFreeCapacity() === 0) {
       creep.memory.building = true;
-      creep.say("building");
+      creep.say("🚧 建造");
     }
 
     if (creep.memory.building) {
       const targets = creep.room.find(FIND_CONSTRUCTION_SITES);
       if (targets.length) {
         if (creep.build(targets[0]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0]);
+          creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#ffffff" } });
         }
       }
     } else {
-      const source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-      if (source && creep.harvest(source) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(source);
+      const sources = creep.room.find(FIND_SOURCES);
+      if (creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(sources[0], { visualizePathStyle: { stroke: "#ffaa00" } });
       }
     }
   }

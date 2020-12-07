@@ -26,7 +26,7 @@ export const loop = function (): void {
     }
   }
 
-  // Automatically delete memory of missing creeps
+  // 删除 Memory 中已经死亡的 creeps
   for (const name in Memory.creeps) {
     if (!(name in Game.creeps)) {
       delete Memory.creeps[name];

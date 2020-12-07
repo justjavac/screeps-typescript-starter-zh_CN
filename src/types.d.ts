@@ -4,9 +4,10 @@
 interface CreepMemory {
   role?: string;
   room?: string;
+  /** 是否正在建造 */
   building?: boolean;
+  /** 是否正在升级 */
   upgrading?: boolean;
-  unloading?: boolean;
 }
 
 interface Memory {
