@@ -1,6 +1,6 @@
 # 使用 Typescript 开发 Screeps
 
-本项目是 [Screeps Typescript Starter](https://github.com/screepers/screeps-typescript-starter) 的简体中文版。基于此项目你可以快速的使用 Typescript 开发属于自己的 Screeps AI 程序。
+本项目是 [Screeps Typescript Starter](https://github.com/screepers/screeps-typescript-starter) 的简体中文版。基于此项目你可以快速地使用 Typescript 开发属于自己的 Screeps AI 程序。
 
 ## 使用
 
@@ -37,7 +37,7 @@ Screeps Typescript Starter 使用 rollup 编译打包 typescript 文件，然后
 
 ## 类型定义文件
 
-本项目所用到的类型定义文件来自 [typed-screeps-zh_CN](https://github.com/justjavac/typed-screeps-zh_CN)。如果开发过程中发现了不能正在提示的地方，可以提 issue 或者 pr。
+本项目所用到的类型定义文件来自 [typed-screeps-zh_CN](https://github.com/justjavac/typed-screeps-zh_CN)。如果开发过程中发现了不能正确提示的地方，可以提 issue 或者 pr。
 
 ## 许可证
 
