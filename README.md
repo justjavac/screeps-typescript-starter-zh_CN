@@ -15,7 +15,7 @@
 git clone https://github.com/justjavac/screeps-typescript-starter-zh_CN
 ```
 
-或者直接下载 <https://github.com/justjavac/screeps-typescript-starter-zh_CN/archive/master.zip>
+或者直接[下载](https://github.com/justjavac/screeps-typescript-starter-zh_CN/archive/master.zip)。
 
 打开终端运行：
 
