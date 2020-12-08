@@ -1,4 +1,6 @@
-// memory extension samples
+/// <reference types="@screepscn/types" />
+
+// 扩展 Memory 对象
 interface CreepMemory {
   /** creep 的角色 */
   role?: string;
@@ -14,7 +16,7 @@ interface Memory {
   log: any;
 }
 
-// `global` extension samples
+// 扩展全局对象
 declare namespace NodeJS {
   interface Global {
     log: any;
