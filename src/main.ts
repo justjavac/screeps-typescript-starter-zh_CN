@@ -13,6 +13,7 @@ export const loop = function (): void {
   });
   towers.forEach(tower.run);
 
+  // 根据 screep 的角色分配不同的任务
   for (const name in Game.creeps) {
     const creep = Game.creeps[name];
     if (creep.memory.role === "harvester") {

@@ -1,3 +1,14 @@
+/**
+ * 采集者。
+ *
+ * 当把 creep 的 `role` 设置为 `"harvester"` 时，creep 在每个 tick 会执行 `roleHarvester.run` 代码。
+ *
+ * ```ts
+ * Game.creeps['name'].memory.role = 'harvester';
+ * ```
+ *
+ * creep 会移动到能量点（source）并采集能量。creep 携带能量达到上限时，让它返回出生点（spawn）。
+ */
 export const roleHarvester = {
   run(creep: Creep): void {
     if (creep.store.getFreeCapacity() > 0) {
