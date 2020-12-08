@@ -39,6 +39,10 @@ Screeps Typescript Starter 使用 rollup 编译打包 typescript 文件，然后
 
 本项目所用到的类型定义文件来自 [typed-screeps-zh_CN](https://github.com/justjavac/typed-screeps-zh_CN)。如果开发过程中发现了不能正确提示的地方，可以提 issue 或者 pr。
 
+## 注意事项
+
+**重要：**请不要升级 `@types/lodash`，因为 screeps 内置了 lodash@3.x 版本，因此请不要将 `@types/lodash` 升级到最新的 4.x 版本，以免引起兼容性问题。
+
 ## 许可证
 
 本项目 [screeps-typescript-starter-zh_CN](https://github.com/justjavac/screeps-typescript-starter-zh_CN) 基于 [Unlicense License](./LICENSE) 发行到公共领域。
