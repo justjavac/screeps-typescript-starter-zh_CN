@@ -1,55 +1,40 @@
-# Screeps Typescript Starter
+# 使用 Typescript 开发 Screeps
 
-Screeps Typescript Starter is a starting point for a Screeps AI written in Typescript. It provides everything you need to start writing your AI whilst leaving `main.ts` as empty as possible.
+本项目是 [Screeps Typescript Starter](https://github.com/screepers/screeps-typescript-starter) 的简体中文版。基于此项目你可以快速的使用 Typescript 开发属于自己的 Screeps AI 程序。
 
-## Basic Usage
+## 使用
 
-You will need:
+前置需求
 
-- [Node.JS](https://nodejs.org/en/download) (10.x)
-- A Package Manager ([Yarn](https://yarnpkg.com/en/docs/getting-started) or [npm](https://docs.npmjs.com/getting-started/installing-node))
-- Rollup CLI (Optional, install via `npm install -g rollup`)
+- [Node.js](https://nodejs.org/zh-cn/) 10.x 版本。目前 Node.js 最新 LTS 版为 14.x，但是和 Screeps 不兼容，所以推荐使用 Screeps 官方推荐的 10.x 版本。
+- 包管理工具 ([Yarn](https://yarnpkg.com/en/docs/getting-started) 或者 [npm](https://docs.npmjs.com/getting-started/installing-node))
 
-Download the latest source [here](https://github.com/screepers/screeps-typescript-starter/archive/master.zip) and extract it to a folder.
+使用 git 克隆本仓库：
 
-Open the folder in your terminal and run your package manager to install the required packages and TypeScript declaration files:
+```shell
+git clone https://github.com/justjavac/screeps-typescript-starter-zh_CN
+```
+
+或者直接下载 <https://github.com/justjavac/screeps-typescript-starter-zh_CN/archive/master.zip>
+
+打开终端运行：
 
 ```bash
 # npm
 npm install
 
-# yarn
+# 或者 yarn
 yarn
 ```
 
-Fire up your preferred editor with typescript installed and you are good to go!
+如果没报错，那么你就可以打开 src 目录进行开发了。
 
-### Rollup and code upload
+### 部署
 
-Screeps Typescript Starter uses rollup to compile your typescript and upload it to a screeps server.
+Screeps Typescript Starter 使用 rollup 编译打包 typescript 文件，然后上传到 screeps 服务器。
 
-Move or copy `screeps.sample.json` to `screeps.json` and edit it, changing the credentials and optionally adding or removing some of the destinations.
+将 `screeps.sample.json` 改名为 `screeps.json`，根据自己的服务器信息进行配置和修改。配置文件中包含了 3 个官服以及我自己搭建的私服 <https://screeps.devtips.cn>。
 
-Running `rollup -c` will compile your code and do a "dry run", preparing the code for upload but not actually pushing it. Running `rollup -c --environment DEST:main` will compile your code, and then upload it to a screeps server using the `main` config from `screeps.json`.
+## 类型定义文件
 
-You can use `-cw` instead of `-c` to automatically re-run when your source code changes - for example, `rollup -cw --environment DEST:main` will automatically upload your code to the `main` configuration every time your code is changed.
-
-Finally, there are also NPM scripts that serve as aliases for these commands in `package.json` for IDE integration. Running `npm run push-main` is equivalent to `rollup -c --environment DEST:main`, and `npm run watch-sim` is equivalent to `rollup -cw --dest sim`.
-
-#### Important! To upload code to a private server, you must have [screepsmod-auth](https://github.com/ScreepsMods/screepsmod-auth) installed and configured!
-
-## Typings
-
-The type definitions for Screeps come from [typed-screeps](https://github.com/screepers/typed-screeps). If you find a problem or have a suggestion, please open an issue there.
-
-## Documentation
-
-We've also spent some time reworking the documentation from the ground-up, which is now generated through [Gitbooks](https://www.gitbook.com/). Includes all the essentials to get you up and running with Screeps AI development in TypeScript, as well as various other tips and tricks to further improve your development workflow.
-
-Maintaining the docs will also become a more community-focused effort, which means you too, can take part in improving the docs for this starter kit.
-
-To visit the docs, [click here](https://screepers.gitbook.io/screeps-typescript-starter/).
-
-## Contributing
-
-Issues, Pull Requests, and contribution to the docs are welcome! See our [Contributing Guidelines](CONTRIBUTING.md) for more details.
+本项目所用到的类型定义文件来自 [typed-screeps-zh_CN](https://github.com/justjavac/typed-screeps-zh_CN)。如果开发过程中发现了不能正在提示的地方，可以提 issue 或者 pr。
